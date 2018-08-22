@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,10 +22,12 @@
             android:layout_weight="20"
             android:orientation="vertical">
 
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:orientation="horizontal"
@@ -35,22 +39,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:scaleType="centerCrop" />
+                    android:adjustViewBounds="true"
+                    android:cropToPadding="true"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/hero_pa" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:orientation="vertical"
                     android:layout_height="match_parent">
-                    <LinearLayout
+                    <TextView
                         android:layout_width="match_parent"
-                        android:orientation="horizontal"
                         android:layout_height="0dp"
-                        android:layout_weight="1">
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"/>
-                    </LinearLayout>
+                        android:layout_weight="1"/>
                     <TextView
                         android:id="@+id/intro1"
                         android:layout_weight="2"
@@ -58,6 +59,10 @@
                         android:layout_height="0dp" />
                 </LinearLayout>
             </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -70,22 +75,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:scaleType="centerCrop" />
+                    android:adjustViewBounds="true"
+                    android:cropToPadding="true"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/hero_we" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:orientation="vertical"
                     android:layout_height="match_parent">
-                    <LinearLayout
+                    <TextView
                         android:layout_width="match_parent"
-                        android:orientation="horizontal"
                         android:layout_height="0dp"
-                        android:layout_weight="1">
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"/>
-                    </LinearLayout>
+                        android:layout_weight="1"/>
                     <TextView
                         android:id="@+id/intro2"
                         android:layout_weight="2"
@@ -110,23 +112,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:scaleType="centerCrop" />
+                    android:adjustViewBounds="true"
+                    android:cropToPadding="true"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/hero_ln" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:orientation="vertical"
                     android:layout_height="match_parent">
-                    <LinearLayout
+                    <TextView
                         android:layout_width="match_parent"
-                        android:orientation="horizontal"
                         android:layout_height="0dp"
-                        android:layout_weight="1">
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"/>
-
-                    </LinearLayout>
+                        android:layout_weight="1"/>
                     <TextView
                         android:id="@+id/intro3"
                         android:layout_weight="2"

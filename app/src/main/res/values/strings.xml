@@ -11,4 +11,19 @@
     <string name="HeroStore">英雄商店</string>
     <string name="StartGame">新游戏</string>
     <string name="LoadGame">继续游戏</string>
+    <string name="Bought">已购买</string>
+    <string name="UnBought">购买</string>
+    <string name="Use">启用</string>
+    <string name="hero1">幻影刺客\nPhantom Assassin</string>
+    <string name="hero2">编制者\nWeaver</string>
+    <string name="hero3">莉娜\nLina</string>
+    <string name="hero4">复仇之魂\nVengeful Spirit</string>
+    <string name="intro1">拥有技能恩赐解脱，在每次合并时都有概率获得多倍得分</string>
+    <string name="intro2">拥有技能时光倒流，可以回到几次操作之前的状态</string>
+    <string name="intro3">拥有技能神灭斩，可以消除一个方块并获得一定的分值</string>
+    <string name="intro4">拥有技能移形换位，可以交换两个方块的位置</string>
+    <string name="price1">购买需要400金币</string>
+    <string name="price2">购买需要900金币</string>
+    <string name="price3">未知</string>
+    <string name="price4">购买需要2000金币</string>
 </resources>

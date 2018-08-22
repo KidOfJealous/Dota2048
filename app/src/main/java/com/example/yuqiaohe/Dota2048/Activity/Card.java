@@ -2,6 +2,7 @@ package com.example.yuqiaohe.Dota2048.Activity;
 
 import android.content.Context;
 import android.graphics.ColorMatrix;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -19,7 +20,8 @@ import java.util.TimerTask;
 public class Card extends FrameLayout{
     //private TextView label;  //呈现的文字
     private ImageView label;
-    ColorMatrix cMatrix = new ColorMatrix();
+    private MainActivity parent;
+    //ColorMatrix cMatrix = new ColorMatrix();
     LayoutParams lp=null;
     LayoutParams la;
     //private ImageView Back;
@@ -29,6 +31,7 @@ public class Card extends FrameLayout{
 
     static int[] images={R.drawable.lg_0,R.drawable.lg_1,R.drawable.lg_2,R.drawable.lg_3,R.drawable.lg_4,R.drawable.lg_5,R.drawable.lg_6,R.drawable.lg_7,R.drawable.lg_8,R.drawable.lg_9,R.drawable.lg_10,R.drawable.lg_11,R.drawable.lg_12,R.drawable.lg_13,R.drawable.lg_14,R.drawable.lg_15,R.drawable.lg_16,R.drawable.lg_17};
 
+    public void setParent(MainActivity m){parent=m;}
     public Card(Context context) {
         super(context);
         setClipChildren(false);
@@ -45,14 +48,6 @@ public class Card extends FrameLayout{
         return num;
     }
 
-    public float getXp()
-    {
-        return label.getX();
-    }
-    public float getYp()
-    {
-        return label.getY();
-    }
     public void setNum(int x) {
         this.num = x;
         lg=0;
@@ -61,7 +56,6 @@ public class Card extends FrameLayout{
             x>>=1;
             lg++;
         }
-        //Reset();
         setImage();
     }
     public void setImage()
@@ -77,6 +71,7 @@ public class Card extends FrameLayout{
     public void Shine(int x,int im)
     {
         label.setImageResource(im);
+        label.setVisibility(VISIBLE);
         this.num = x;
         lg=0;
         while(x>1)
@@ -88,7 +83,7 @@ public class Card extends FrameLayout{
         t.schedule(new TimerTask() {
             @Override
             public void run() {
-                MainActivity.getMainActivity().mainHandler.post(new Runnable() {
+                parent.mainHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         /*label.setImageResource(images[lg]);*/

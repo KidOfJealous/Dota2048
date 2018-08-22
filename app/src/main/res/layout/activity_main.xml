@@ -19,7 +19,8 @@
             android:layout_height="47dp"
             android:orientation="horizontal">
 
-            <TextView
+            <me.grantland.widget.AutofitTextView
+                android:singleLine="true"
                 android:layout_width="133dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
@@ -27,7 +28,8 @@
                 android:textColor="@color/scoreColor"
                 android:textSize="24sp" />
 
-            <TextView
+            <me.grantland.widget.AutofitTextView
+                android:singleLine="true"
                 android:id="@+id/maxScore"
                 android:layout_width="90dp"
                 android:layout_height="match_parent"
@@ -35,7 +37,8 @@
                 android:textColor="@color/scoreColor"
                 android:textSize="20sp" />
 
-            <TextView
+            <me.grantland.widget.AutofitTextView
+                android:singleLine="true"
                 android:id="@+id/maxlevel"
                 android:layout_width="88dp"
                 android:layout_height="match_parent"
@@ -62,7 +65,8 @@
             android:layout_height="47dp"
             android:orientation="horizontal">
 
-            <TextView
+            <me.grantland.widget.AutofitTextView
+                android:singleLine="true"
                 android:layout_width="133dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
@@ -70,16 +74,18 @@
                 android:textColor="@color/scoreColor"
                 android:textSize="24sp" />
 
-            <TextView
+            <me.grantland.widget.AutofitTextView
                 android:id="@+id/tvScore"
+                android:singleLine="true"
                 android:layout_width="90dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:textColor="@color/scoreColor"
                 android:textSize="20sp" />
 
-            <TextView
+            <me.grantland.widget.AutofitTextView
                 android:id="@+id/level"
+                android:singleLine="true"
                 android:layout_width="88dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
@@ -134,20 +140,22 @@
                 android:layout_height="80dp"
                 android:orientation="vertical">
 
-                <TextView
+                <me.grantland.widget.AutofitTextView
+                    android:id="@+id/SkillName"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:gravity="center"
-                    android:text="@string/SkiName"
                     android:textAlignment="center"
                     android:textColor="@android:color/white"
+                    android:singleLine="true"
                     android:textSize="24sp" />
-
-                <TextView
+                <me.grantland.widget.AutofitTextView
+                    app:sizeToFit="true"
                     android:id="@+id/intro"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
+                    android:textAlignment="center"
                     android:textColor="@android:color/white"
                     android:textSize="20sp" />
             </LinearLayout>
@@ -172,7 +180,8 @@
                 android:background="#818181"
                 android:src="@drawable/bt_1" />
 
-            <TextView
+            <me.grantland.widget.AutofitTextView
+                android:singleLine="true"
                 android:id="@+id/Price"
                 android:layout_width="180dp"
                 android:layout_height="match_parent"
@@ -185,7 +194,8 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:layout_height="match_parent" />
-            <TextView
+            <me.grantland.widget.AutofitTextView
+                android:singleLine="true"
                 android:id="@+id/Gold"
                 android:gravity="center"
                 android:textColor="@android:color/white"

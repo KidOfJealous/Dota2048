@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,7 +37,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:scaleType="centerCrop" />
+                    android:adjustViewBounds="true"
+                    android:cropToPadding="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/hero_pa" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -45,10 +51,12 @@
                         android:orientation="horizontal"
                         android:layout_height="0dp"
                         android:layout_weight="1">
-                        <TextView
+                        <me.grantland.widget.AutofitTextView
+                            android:singleLine="true"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"/>
+                            android:layout_weight="1"
+                            android:text="@string/price1"/>
                         <Button
                             android:id="@+id/buy1"
                             android:layout_width="0dp"
@@ -63,7 +71,10 @@
                         android:layout_height="0dp" />
                 </LinearLayout>
             </LinearLayout>
-
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:orientation="horizontal"
@@ -74,7 +85,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:scaleType="centerCrop" />
+                    android:adjustViewBounds="true"
+                    android:cropToPadding="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/hero_we" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -85,9 +99,11 @@
                         android:orientation="horizontal"
                         android:layout_height="0dp"
                         android:layout_weight="1">
-                        <TextView
+                        <me.grantland.widget.AutofitTextView
+                            android:singleLine="true"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
+                            android:text="@string/price2"
                             android:layout_weight="1"/>
                         <Button
                             android:id="@+id/buy2"
@@ -116,10 +132,14 @@
                 android:layout_weight="4">
 
                 <ImageView
+                    android:src="@drawable/hero_ln"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:scaleType="centerCrop" />
+                    android:adjustViewBounds="true"
+                    android:cropToPadding="true"
+                    android:scaleType="fitXY"
+                    android:visibility="visible" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -130,10 +150,13 @@
                         android:orientation="horizontal"
                         android:layout_height="0dp"
                         android:layout_weight="1">
-                        <TextView
+
+                        <me.grantland.widget.AutofitTextView
+                            android:singleLine="true"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"/>
+                            android:layout_weight="1"
+                            android:text="@string/price3"/>
                         <Button
                             android:id="@+id/buy3"
                             android:layout_width="0dp"

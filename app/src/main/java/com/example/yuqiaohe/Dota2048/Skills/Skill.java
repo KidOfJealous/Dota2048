@@ -15,13 +15,18 @@ public class Skill {
     protected int CoolDown;
     protected int CurrentCool;
     protected int image;
-    public final boolean clickable=false;
-    public Skill(Context context,String name)
+    protected String PriceString;
+    protected String IntroString;
+    protected MainActivity parent;
+    public boolean clickable=false;
+    public Skill(Context context,String name,MainActivity ma)
     {
         SkillName=name;
         s = context.getSharedPreferences(SkillName,context.MODE_PRIVATE);
         SkillLevel = s.getInt("skillLevel1",0);
         Price = (SkillLevel+1)*(SkillLevel+1)*100;
+        parent=ma;
+        //init();
     }
     public void levelUp()
     {
@@ -30,7 +35,9 @@ public class Skill {
         SharedPreferences.Editor editor = s.edit();
         editor.putInt("skillLevel1",SkillLevel);
         editor.apply();
+        Refrash();
     }
+    public String getSkillName(){return "无技能";}
     public int getSkillLevel(){return SkillLevel;}
     public int getImage() {
         return image;
@@ -42,7 +49,7 @@ public class Skill {
         if(CurrentCool==0){
             CurrentCool=CoolDown;
         }
-        else Toast.makeText(MainActivity.getMainActivity(), "技能还在冷却，剩余"+CoolDown+"次移动",Toast.LENGTH_SHORT).show();
+        else Toast.makeText(parent, "技能还在冷却，剩余"+CoolDown+"次移动",Toast.LENGTH_SHORT).show();
     }
     protected void write(String name,int value)
     {
@@ -52,10 +59,30 @@ public class Skill {
     }
     public void init(){
     }
-
+    protected void Refrash()
+    {
+        initPriceString();
+        initIntroString();
+    }
+    public String getPriceString()
+    {
+       return PriceString;
+    }
+    public String getIntroString()
+    {
+        return IntroString;
+    }
     public void Cool()
     {
         if(CurrentCool>0)CurrentCool--;
     }
-
+    protected void initPriceString()
+    {
+        if(SkillLevel==3)PriceString="技能已升至满级";
+        else PriceString="升级需要："+Price+"金币";
+    }
+    protected void initIntroString()
+    {
+        PriceString="你还没有英雄";
+    }
 }
