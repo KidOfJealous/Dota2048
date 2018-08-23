@@ -17,8 +17,6 @@ public class TimeLapse extends Skill {
         SkillId=2;
         step=0;
         CoolDown=70-10*SkillLevel;
-        //Log.d("233",""+SkillLevel);
-        //Log.d("233",""+CoolDown);
         image=R.drawable.skill_2;
         ReadValues();
         Refrash();
@@ -88,6 +86,6 @@ public class TimeLapse extends Skill {
     protected void initIntroString()
     {
         if(SkillLevel==0)IntroString ="你没有学习此技能";
-        IntroString="使你回到5步前的状态。当前等级为"+SkillLevel+"，冷却时间为"+CoolDown+"步。";
+        else IntroString="使你回到5步前的状态。当前等级为"+SkillLevel+"，冷却时间为"+CoolDown+"步。";
     }
 }

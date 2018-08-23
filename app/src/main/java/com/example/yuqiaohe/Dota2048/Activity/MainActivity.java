@@ -40,10 +40,11 @@ public class MainActivity extends Activity {
     public TextView tvBestScore;//最高分
     public TextView tvMaxLevel;
     public TextView tvLevel;
-    public AutofitTextView tvIntro;
+    public TextView tvIntro;
     public TextView tvPrice;
     public TextView tvGold;
     public TextView tvSkill;
+    public AutofitTextView tvStore;
     public Handler mainHandler;
 
     private String[] levels = {"先锋","卫士","中军","统帅","传奇","万古流芳","超凡入圣","冠绝一世"};
@@ -412,6 +413,8 @@ public class MainActivity extends Activity {
     }
     public void ReBegin()
     {
+        load();
+        calculateGold();
         SharedPreferences s = this.getSharedPreferences("currentPosition",this.MODE_PRIVATE);
         mySkill = SkillFactory.CreateSkill(this,s.getInt("SkillUsing",0),this);
         Restart();
@@ -671,10 +674,12 @@ public class MainActivity extends Activity {
     }
     private void setStoreButtons()
     {
+        tvStore = findViewById(R.id.StoreGold);
+        tvStore.setText("你拥有"+new Gold(this).getGold()+"金币");
         contentView=R.layout.activity_store;
-        Button buy1 = findViewById(R.id.buy1);
-        Button buy2 = findViewById(R.id.buy2);
-        Button buy3 = findViewById(R.id.buy3);
+        final Button buy1 = findViewById(R.id.buy1);
+        final Button buy2 = findViewById(R.id.buy2);
+        final Button buy3 = findViewById(R.id.buy3);
         final Hero hero = new Hero(this);
         if(buy1!=null)
         {
@@ -683,11 +688,12 @@ public class MainActivity extends Activity {
                 buy1.setText(R.string.Bought);
                 buy1.setClickable(false);
             }
-            else buy1.setText(R.string.UnBought);
+            else buy1.setText(R.string.price1);
             buy1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(new Gold(MainActivity.this).buy(hero.getPrice(1))){hero.bought(1);}
+                    if(!hero.isbought(1)&&new Gold(MainActivity.this).buy(hero.getPrice(1))){hero.bought(1);buy1.setText(R.string.Bought);buy1.setClickable(false);}
+                    else if(hero.isbought(1))Toast.makeText(MainActivity.this, "你已购买",Toast.LENGTH_SHORT).show();
                     else Toast.makeText(MainActivity.this, "金钱不足",Toast.LENGTH_SHORT).show();
                 }
             });
@@ -699,17 +705,19 @@ public class MainActivity extends Activity {
                 buy2.setText(R.string.Bought);
                 buy2.setClickable(false);
             }
-            else buy2.setText(R.string.UnBought);
+            else buy2.setText(R.string.price2);
             buy2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(new Gold(MainActivity.this).buy(hero.getPrice(2))){hero.bought(2);}
+                    if(!hero.isbought(2)&&new Gold(MainActivity.this).buy(hero.getPrice(2))){hero.bought(2);buy2.setText(R.string.Bought);buy2.setClickable(false);}
+                    else if(hero.isbought(2))Toast.makeText(MainActivity.this, "你已购买",Toast.LENGTH_SHORT).show();
                     else Toast.makeText(MainActivity.this, "金钱不足",Toast.LENGTH_SHORT).show();
                 }
             });
         }
         if(buy3!=null)
         {
+            buy3.setText(R.string.price3);
             buy3.setClickable(false);
             buy3.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -732,9 +740,10 @@ public class MainActivity extends Activity {
         final SharedPreferences.Editor e = s.edit();
         if(hero.hasNone())
         {
-            e.putInt("SkillUsing",0);
+            e.putInt("SkillUsing",1);
             e.apply();
             setGameView();
+            Toast.makeText(this, "你没有英雄，开始无技能游戏", Toast.LENGTH_SHORT).show();
             ReBegin();
             setView();
         }
@@ -747,7 +756,9 @@ public class MainActivity extends Activity {
                     e.apply();
                     setGameView();
                     ReBegin();
-                    setView();                }
+                    setView();
+                }
+                else Toast.makeText(MainActivity.this, "你没有这个英雄", Toast.LENGTH_SHORT).show();
             }
         });
         use2.setOnClickListener(new View.OnClickListener() {
@@ -761,6 +772,8 @@ public class MainActivity extends Activity {
                     ReBegin();
                     setView();
                 }
+                else Toast.makeText(MainActivity.this, "你没有这个英雄", Toast.LENGTH_SHORT).show();
+
             }
         });
         use3.setOnClickListener(new View.OnClickListener() {
@@ -772,7 +785,10 @@ public class MainActivity extends Activity {
                     e.apply();
                     setGameView();
                     ReBegin();
-                    setView();                }
+                    setView();
+                }
+                else Toast.makeText(MainActivity.this, "你没有这个英雄", Toast.LENGTH_SHORT).show();
+
             }
         });
     }

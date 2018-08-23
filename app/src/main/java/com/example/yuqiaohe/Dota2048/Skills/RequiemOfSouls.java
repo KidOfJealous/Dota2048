@@ -7,13 +7,13 @@ import com.example.yuqiaohe.test.R;
 
 public class RequiemOfSouls extends Skill{
 
-    public final boolean clickable = false;
     public RequiemOfSouls(Context context, MainActivity ma){
         super(context,"RequiemOfSouls",ma);
         SkillId=1;
         CoolDown=0;
         image= R.drawable.skill_1;
         init();
+        Refrash();
     }
     @Override
     public String getSkillName(){return "恩赐解脱";}
@@ -26,7 +26,14 @@ public class RequiemOfSouls extends Skill{
     protected void initIntroString()
     {
         if(SkillLevel==0)IntroString =  "你没有学习此技能";
-        IntroString="当前等级为"+SkillLevel+"，15%的概率获得"+String.format("%.1f",SkillLevel*1.1+1.2)+"倍得分。";
+        else IntroString="当前等级为"+SkillLevel+"，15%的概率获得"+String.format("%.1f",SkillLevel*1.1+1.2)+"倍得分。";
+    }
+    @Override
+    protected void Refrash()
+    {
+        initPriceString();
+        initIntroString();
+        clickable=false;
     }
 }
 
