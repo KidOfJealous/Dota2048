@@ -2,8 +2,7 @@ package com.example.yuqiaohe.Dota2048.Skills;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
-import android.widget.Toast;
+
 import com.example.yuqiaohe.Dota2048.Activity.MainActivity;
 import com.example.yuqiaohe.test.R;
 
@@ -18,13 +17,14 @@ public class TimeLapse extends Skill {
         step=0;
         CoolDown=70-10*SkillLevel;
         image=R.drawable.skill_2;
+        CurrentCool=s.getInt("currentCool",CoolDown);
         ReadValues();
-        Refrash();
+        Refresh();
     }
     @Override
     public void Cool() {
         super.Cool();
-        Log.d("cool",String.valueOf(CurrentCool));
+        //Log.d("cool",String.valueOf(CurrentCool));
         //偷懒的方法，在冷却为5时计入。
         if (step==5) {
             for(int i=0;i<4;++i)
@@ -57,15 +57,17 @@ public class TimeLapse extends Skill {
         CurrentCool=s.getInt("CurrentCool",CoolDown);
     }
     @Override
-    public void ClickOn(){
-        if(!clickable)return;
+    public boolean ClickOn(){
+        if(!clickable)return false;
         if(CurrentCool==0){
             CurrentCool=CoolDown;
             parent.Load(values[0]);
             WriteValues();
+            return true;
         }
         else{
-            Toast.makeText(parent, "技能还在冷却，剩余"+CurrentCool+"次移动",Toast.LENGTH_SHORT).show();
+            parent.showTextToast("技能还在冷却，剩余"+CurrentCool+"次移动");
+            return false;
         }
     }
     @Override
@@ -73,11 +75,13 @@ public class TimeLapse extends Skill {
     {
         step=0;
         values[0]=parent.Export();
+        for(int i=1;i<5;++i)values[i]=parent.Export();
         CurrentCool=0;
     }
     @Override
-    protected void Refrash()
+    protected void Refresh()
     {
+        CoolDown=70-10*SkillLevel;
         initPriceString();
         initIntroString();
         clickable=SkillLevel!=0;

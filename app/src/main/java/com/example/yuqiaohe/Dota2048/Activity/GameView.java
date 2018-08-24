@@ -166,5 +166,12 @@ public class GameView extends FrameLayout {
         heightMeasureSpec = MeasureSpec.makeMeasureSpec(heightSize, MeasureSpec.EXACTLY);
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
+    public Point getBlock(float x, float y)
+    {
+        int w = getCardWitch();
+        int xx = ((int)(x/w));
+        int yy = ((int)(y/w));
+        return new Point(xx,yy);
+    }
 
 }

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 public class Hero {
-    private static int[] prices = {400,900,1600,2500};
     public  SharedPreferences s;
     public Hero(Context context)
     {
@@ -12,7 +11,8 @@ public class Hero {
     }
     public  int getPrice(int id)
     {
-        return prices[id];
+        if(id==0)return 0;
+        return 100*(id+1)*(id+1);
     }
     public  void bought(int id)
     {

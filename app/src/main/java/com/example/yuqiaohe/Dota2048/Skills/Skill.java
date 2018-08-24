@@ -2,9 +2,12 @@ package com.example.yuqiaohe.Dota2048.Skills;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.widget.Toast;
+import android.graphics.Point;
 
 import com.example.yuqiaohe.Dota2048.Activity.MainActivity;
+import com.example.yuqiaohe.test.R;
+
+import java.util.ArrayList;
 
 public class Skill {
     protected SharedPreferences s;
@@ -14,10 +17,13 @@ public class Skill {
     protected int SkillId;
     protected int CoolDown;
     protected int CurrentCool;
-    protected int image;
+    protected int image= R.drawable.lg_0;
+    protected int clickNum=0;
     protected String PriceString;
     protected String IntroString;
     protected MainActivity parent;
+    protected boolean waitForClick=false;
+    protected ArrayList<Point> clicks = new ArrayList<>();
     public boolean clickable=false;
     public Skill(Context context,String name,MainActivity ma)
     {
@@ -35,7 +41,7 @@ public class Skill {
         SharedPreferences.Editor editor = s.edit();
         editor.putInt("skillLevel1",SkillLevel);
         editor.apply();
-        Refrash();
+        Refresh();
     }
     public String getSkillName(){return "无技能";}
     public int getSkillLevel(){return SkillLevel;}
@@ -45,11 +51,13 @@ public class Skill {
     public int getPrice(){return Price;}
 
     public double getMultiple(){return 1.0;}
-    public void ClickOn(){
+    public boolean ClickOn(){
         if(CurrentCool==0){
             CurrentCool=CoolDown;
+            return true;
         }
-        else Toast.makeText(parent, "技能还在冷却，剩余"+CoolDown+"次移动",Toast.LENGTH_SHORT).show();
+        else parent.showTextToast("技能还在冷却，剩余"+CoolDown+"次移动");
+        return false;
     }
     protected void write(String name,int value)
     {
@@ -59,7 +67,7 @@ public class Skill {
     }
     public void init(){
     }
-    protected void Refrash()
+    protected void Refresh()
     {
         initPriceString();
         initIntroString();
@@ -75,6 +83,7 @@ public class Skill {
     public void Cool()
     {
         if(CurrentCool>0)CurrentCool--;
+        write("currentCool",CurrentCool);
     }
     protected void initPriceString()
     {
@@ -85,4 +94,25 @@ public class Skill {
     {
         PriceString="你还没有英雄";
     }
+    public int getCoolDown() {
+        return CoolDown;
+    }
+
+    public int getCurrentCool() {
+        return CurrentCool;
+    }
+    public void waitForClick(){waitForClick=true;}
+    public void cancelWait(){waitForClick=false;}
+    public boolean isWait(){return waitForClick;}
+    public void addClicks(Point p)
+    {
+        clicks.add(p);
+        if(clicks.size()==clickNum)
+        {
+            cancelWait();
+            InvokeSkill();
+        }
+    }
+    public void clearPoints(){clicks.clear();}
+    public void InvokeSkill(){}
 }

@@ -6,6 +6,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -46,7 +49,8 @@ public class MainActivity extends Activity {
     public TextView tvSkill;
     public AutofitTextView tvStore;
     public Handler mainHandler;
-
+    private Toast toast;
+    public ImageView sk;
     private String[] levels = {"先锋","卫士","中军","统帅","传奇","万古流芳","超凡入圣","冠绝一世"};
     private int score;
     private int bestScores;//历史最高成绩
@@ -60,7 +64,11 @@ public class MainActivity extends Activity {
     private List<Point> points = new ArrayList<>();
     private Animation[][] animes = new TranslateAnimation[4][4];
     //private static MainActivity mainActivity = null;
-
+    public void showTextToast(String msg) {
+        if(toast!=null) toast.cancel();
+        toast = Toast.makeText(this, msg, Toast.LENGTH_SHORT);
+        toast.show();
+    }
     public MainActivity(){
         Log.d("mainActivity","created");
     }
@@ -107,7 +115,7 @@ public class MainActivity extends Activity {
             gv.setOnTouchListener(new View.OnTouchListener() {
                 private float startX, startY;//初始的位置
                 private float offsetX, offsetY; //偏移的值
-
+                private boolean wait;
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (!move) return true;
@@ -117,23 +125,29 @@ public class MainActivity extends Activity {
                             startY = event.getY();
                             break;
                         case MotionEvent.ACTION_UP:
+                            if (mySkill.isWait()) {
+                                //showTextToast("点击了");
+                                mySkill.addClicks(gv.getBlock(startX, startY));
+                                break;
+                            }
                             offsetX = event.getX() - startX;
                             offsetY = event.getY() - startY;
                             Clear();
+                            int limit = 100;
                             if (Math.abs(offsetX) > Math.abs(offsetY)) {//这个是防止斜着化
-                                if (offsetX < -80) {
+                                if (offsetX < -limit) {
                                     Log.d("move", "left");
                                     swipeLeft();
 
-                                } else if (offsetX > 80) {
+                                } else if (offsetX > limit) {
                                     Log.d("move", "right");
                                     swipeRight();
                                 }
                             } else {
-                                if (offsetY < -80) {
+                                if (offsetY < -limit) {
                                     Log.d("move", "up");
                                     swipeUp();
-                                } else if (offsetY > 80) {
+                                } else if (offsetY > limit) {
                                     Log.d("move", "down ");
                                     swipeDown();
                                 }
@@ -153,6 +167,7 @@ public class MainActivity extends Activity {
         setButtons();
         setTexts();
         showScore();
+        setCoolImage();
     }
     public void showGold()
     {
@@ -210,7 +225,7 @@ public class MainActivity extends Activity {
             else {
 
                 if((System.currentTimeMillis() - exitTime) > 2000) {
-                    Toast.makeText(this, "再按一次返回键退出", Toast.LENGTH_SHORT).show();
+                    showTextToast("再按一次返回键退出");
                     exitTime = System.currentTimeMillis();
                 }
                 else {
@@ -222,6 +237,11 @@ public class MainActivity extends Activity {
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+    public void Cool()
+    {
+        mySkill.Cool();
+        setCoolImage();
     }
     public void store()
     {
@@ -272,8 +292,7 @@ public class MainActivity extends Activity {
         Button bt = findViewById(R.id.bt_cx);
         Button cl = findViewById(R.id.clear);
         ImageButton us = findViewById(R.id.US);
-        ImageView sk = findViewById(R.id.Skill);
-
+        sk = findViewById(R.id.Skill);
         if(bt!=null)bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -307,13 +326,14 @@ public class MainActivity extends Activity {
         if(sk!=null)
         {
             sk.setImageResource(mySkill.getImage());
-            sk.setClickable(mySkill.clickable);
             sk.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mySkill.ClickOn();
+                    setCoolImage();
                 }
             });
+            sk.setClickable(mySkill.clickable);
         }
     }
     private void setTexts()
@@ -401,6 +421,7 @@ public class MainActivity extends Activity {
         for (int y = 0;y<4;y++){
             for (int x = 0;x < 4;x++) {
                 value[x][y]=0;
+                shines[x][y]=false;
             }
         }
         clearScore();
@@ -409,14 +430,13 @@ public class MainActivity extends Activity {
         addRandomNum();
         mySkill.init();
         gv.setAll();
+        setCoolImage();
         store();
     }
     public void ReBegin()
     {
         load();
         calculateGold();
-        SharedPreferences s = this.getSharedPreferences("currentPosition",this.MODE_PRIVATE);
-        mySkill = SkillFactory.CreateSkill(this,s.getInt("SkillUsing",0),this);
         Restart();
         gv.setAll();
         store();
@@ -461,6 +481,14 @@ public class MainActivity extends Activity {
         value[p.x][p.y]=(Math.random()>0.1?2:4);
         gv.setAll();
         store();
+    }
+    public void setCoolImage()
+    {
+        int Brightness = -mySkill.getCurrentCool()*10;
+        ColorMatrix matrix = new ColorMatrix();
+        matrix.set(new float[]{1, 0, 0, 0, Brightness, 0, 1, 0, 0, Brightness, 0, 0, 1, 0, Brightness, 0, 0, 0, 1, 0});
+        ColorMatrixColorFilter cmcf = new ColorMatrixColorFilter(matrix);
+        if(sk!=null)sk.setColorFilter(cmcf);
     }
     public void Clear()
     {
@@ -508,7 +536,7 @@ public class MainActivity extends Activity {
             }
         }
         if (merge) {
-            mySkill.Cool();
+            Cool();
             gv.StartAnimes(animes);
         }
     }
@@ -543,7 +571,7 @@ public class MainActivity extends Activity {
             }
         }
         if (merge) {
-            mySkill.Cool();
+            Cool();
             gv.StartAnimes(animes);
         }
     }
@@ -580,7 +608,7 @@ public class MainActivity extends Activity {
             }
         }
         if (merge) {
-            mySkill.Cool();
+            Cool();
             gv.StartAnimes(animes);
         }
     }
@@ -615,7 +643,7 @@ public class MainActivity extends Activity {
             }
         }
         if (merge) {
-            mySkill.Cool();
+            Cool();
             gv.StartAnimes(animes);
         }
     }
@@ -658,6 +686,7 @@ public class MainActivity extends Activity {
                     setGameView();
                     startGame();
                     setView();
+
                 }
             });
         }
@@ -693,8 +722,8 @@ public class MainActivity extends Activity {
                 @Override
                 public void onClick(View v) {
                     if(!hero.isbought(1)&&new Gold(MainActivity.this).buy(hero.getPrice(1))){hero.bought(1);buy1.setText(R.string.Bought);buy1.setClickable(false);}
-                    else if(hero.isbought(1))Toast.makeText(MainActivity.this, "你已购买",Toast.LENGTH_SHORT).show();
-                    else Toast.makeText(MainActivity.this, "金钱不足",Toast.LENGTH_SHORT).show();
+                    else if(hero.isbought(1))showTextToast("你已购买");
+                    else showTextToast("金钱不足");
                 }
             });
         }
@@ -710,21 +739,25 @@ public class MainActivity extends Activity {
                 @Override
                 public void onClick(View v) {
                     if(!hero.isbought(2)&&new Gold(MainActivity.this).buy(hero.getPrice(2))){hero.bought(2);buy2.setText(R.string.Bought);buy2.setClickable(false);}
-                    else if(hero.isbought(2))Toast.makeText(MainActivity.this, "你已购买",Toast.LENGTH_SHORT).show();
-                    else Toast.makeText(MainActivity.this, "金钱不足",Toast.LENGTH_SHORT).show();
+                    else if(hero.isbought(2))showTextToast("你已购买");
+                    else showTextToast("金钱不足");
                 }
             });
         }
         if(buy3!=null)
         {
-            buy3.setText(R.string.price3);
-            buy3.setClickable(false);
+            if(hero.isbought(3))
+            {
+                buy3.setText(R.string.Bought);
+                buy3.setClickable(false);
+            }
+            else buy3.setText(R.string.price3);
             buy3.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(MainActivity.this, "尚未推出，敬请期待",Toast.LENGTH_SHORT).show();
-                    //if(new Gold(MainActivity.this).buy(Hero.getPrice(3))){Hero.bought(3);}
-                    //else Toast.makeText(MainActivity.this, "金钱不足",Toast.LENGTH_SHORT).show();
+                    if(!hero.isbought(3)&&new Gold(MainActivity.this).buy(hero.getPrice(3))){hero.bought(3);buy3.setText(R.string.Bought);buy3.setClickable(false);}
+                    else if(hero.isbought(3))showTextToast("你已购买");
+                    else showTextToast("金钱不足");
                 }
             });
         }
@@ -740,10 +773,10 @@ public class MainActivity extends Activity {
         final SharedPreferences.Editor e = s.edit();
         if(hero.hasNone())
         {
-            e.putInt("SkillUsing",1);
+            e.putInt("SkillUsing",0);
             e.apply();
             setGameView();
-            Toast.makeText(this, "你没有英雄，开始无技能游戏", Toast.LENGTH_SHORT).show();
+            showTextToast("你没有英雄，将开始无技能游戏");
             ReBegin();
             setView();
         }
@@ -758,7 +791,7 @@ public class MainActivity extends Activity {
                     ReBegin();
                     setView();
                 }
-                else Toast.makeText(MainActivity.this, "你没有这个英雄", Toast.LENGTH_SHORT).show();
+                else showTextToast("你没有这个英雄");
             }
         });
         use2.setOnClickListener(new View.OnClickListener() {
@@ -772,7 +805,7 @@ public class MainActivity extends Activity {
                     ReBegin();
                     setView();
                 }
-                else Toast.makeText(MainActivity.this, "你没有这个英雄", Toast.LENGTH_SHORT).show();
+                else showTextToast("你没有这个英雄");
 
             }
         });
@@ -787,9 +820,39 @@ public class MainActivity extends Activity {
                     ReBegin();
                     setView();
                 }
-                else Toast.makeText(MainActivity.this, "你没有这个英雄", Toast.LENGTH_SHORT).show();
+                else showTextToast("你没有这个英雄");
 
             }
         });
+    }
+    public int DestroyBlock(int x,int y,int damage)
+    {
+        //Log.v("lagunaBlade",x+":"+y);
+        if(x>=4||y>=4)return -1;
+        int s = value[x][y];
+        if(s>damage) {
+            showTextToast("方块过大，无法摧毁");
+            return -1;
+        }
+        if(s==0)
+        {
+            showTextToast("这是一个空格子");
+            return -1;
+        }
+        int p = s;
+        int ss = 0;
+        while((p>>=1)>1)
+        {
+            ss+=s;
+        }
+        value[x][y]=0;
+        addScore(ss);
+        showTextToast("摧毁成功，获得"+ss+"分");
+        for(int i=0;i<4;++i)
+            for(int j=0;j<4;++j)
+                shines[i][j]=false;
+        shines[x][y]=true;
+        gv.SetAll(R.drawable.im_lb);
+        return ss;
     }
 }

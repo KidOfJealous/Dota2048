@@ -13,7 +13,7 @@ public class RequiemOfSouls extends Skill{
         CoolDown=0;
         image= R.drawable.skill_1;
         init();
-        Refrash();
+        Refresh();
     }
     @Override
     public String getSkillName(){return "恩赐解脱";}
@@ -29,7 +29,7 @@ public class RequiemOfSouls extends Skill{
         else IntroString="当前等级为"+SkillLevel+"，15%的概率获得"+String.format("%.1f",SkillLevel*1.1+1.2)+"倍得分。";
     }
     @Override
-    protected void Refrash()
+    protected void Refresh()
     {
         initPriceString();
         initIntroString();

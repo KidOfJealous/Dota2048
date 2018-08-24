@@ -11,7 +11,7 @@
     <string name="HeroStore">英雄商店</string>
     <string name="StartGame">新游戏</string>
     <string name="LoadGame">继续游戏</string>
-    <string name="Bought">已购买</string>
+    <string name="Bought">已&#160;购&#160;买</string>
     <string name="UnBought">购买</string>
     <string name="Use">启用</string>
     <string name="hero1">幻影刺客&#160;Phantom Assassin</string>
@@ -32,7 +32,7 @@
     <string name="tips4"></string>
     <string name="price1">需要400金币</string>
     <string name="price2">需要900金币</string>
-    <string name="price3">还不能购买</string>
-    <string name="price4">需要2000金币</string>
+    <string name="price3">需要1600金币</string>
+    <string name="price4">需要2500金币</string>
     <string name="chooseHero">英雄选择</string>
 </resources>
