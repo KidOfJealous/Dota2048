@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:clipChildren="false"
     android:background="#818181"
+    android:clipChildren="false"
     android:orientation="vertical"
-    tools:context="com.example.yuqiaohe.Dota2048.Activity.MainActivity">
+    tools:context="com.Dota2048.Activity.MainActivity">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -20,6 +19,7 @@
             android:src="@drawable/back" />
 
         <LinearLayout
+            android:id="@+id/store"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
@@ -29,6 +29,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="vertical">
+
             </LinearLayout>
 
             <LinearLayout
@@ -41,271 +42,551 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="0.2" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:orientation="horizontal">
+                    <Button
+                        android:id="@+id/prePage"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:background="@drawable/button_style2"
+                        android:text="@string/PrePage" />
+
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"/>
-                <me.grantland.widget.AutofitTextView
-                    android:id="@+id/StoreGold"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:padding="2dp"
-                    android:gravity="center"
-                    android:textSize="20sp"
-                    android:singleLine="true"
-                    android:background="@drawable/button_style2"
-                    android:textColor="@android:color/background_dark"
-                    android:layout_weight="3"
-                    />
+                        android:layout_weight="1" />
+
+                    <me.grantland.widget.AutofitTextView
+                        android:id="@+id/StoreGold"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="5"
+                        android:background="@drawable/button_style2"
+                        android:gravity="center"
+                        android:padding="2dp"
+                        android:singleLine="true"
+                        android:textColor="@android:color/background_dark"
+                        android:textSize="20sp" />
+
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"/>
-                </LinearLayout>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="0.2" />
+                        android:layout_weight="1" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="4"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
+                    <Button
+                        android:id="@+id/nextPage"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:adjustViewBounds="true"
-                        android:cropToPadding="true"
-                        android:background="#B7DA00"
-                        android:padding="2dp"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/hero_pa" />
+                        android:layout_weight="2"
+                        android:background="@drawable/button_style2"
+                        android:text="@string/NextPage" />
+                </LinearLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="14.2">
 
                     <LinearLayout
+                        android:id="@+id/store0"
+
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical">
 
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="0.2" />
+
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
-                            android:layout_weight="1"
+                            android:layout_weight="4"
                             android:orientation="horizontal">
 
-                            <me.grantland.widget.AutofitTextView
-                                android:layout_width="0dp"
+                            <ImageView
+                                android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:background="@drawable/pa_border"
+                                android:layout_gravity="center"
+                                android:adjustViewBounds="true"
+                                android:background="#B7DA00"
+                                android:cropToPadding="true"
                                 android:padding="2dp"
-                                android:gravity="center"
-                                android:singleLine="true"
-                                android:text="@string/heroS1"
-                                android:textColor="#FFFFFF"
-                                android:textSize="30sp" />
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/hero_pa" />
 
-                            <me.grantland.widget.AutofitLayout
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1">
-                            <Button
+                            <LinearLayout
                                 android:layout_width="match_parent"
-                                android:id="@+id/buy1"
                                 android:layout_height="match_parent"
-                                style="@style/Widget.AppCompat.Button"
-                                android:textColor="@android:color/background_dark"
-                                android:textSize="50sp"
-                                android:singleLine="true"
-                                android:background="@drawable/button_style2" />
-                            </me.grantland.widget.AutofitLayout>
+                                android:orientation="vertical">
 
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dp"
+                                    android:layout_weight="1"
+                                    android:orientation="horizontal">
+
+                                    <me.grantland.widget.AutofitTextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1"
+                                        android:background="@drawable/pa_border"
+                                        android:gravity="center"
+                                        android:padding="2dp"
+                                        android:singleLine="true"
+                                        android:text="@string/heroS1"
+                                        android:textColor="#FFFFFF"
+                                        android:textSize="30sp" />
+
+                                    <me.grantland.widget.AutofitLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1">
+
+                                        <Button
+                                            android:id="@+id/buy1"
+                                            style="@style/Widget.AppCompat.Button"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:background="@drawable/button_style2"
+                                            android:singleLine="true"
+                                            android:textColor="@android:color/background_dark"
+                                            android:textSize="50sp" />
+                                    </me.grantland.widget.AutofitLayout>
+
+                                </LinearLayout>
+
+                                <me.grantland.widget.AutofitTextView
+                                    android:id="@+id/intro1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dp"
+                                    android:layout_weight="2"
+                                    android:background="@drawable/pa_border"
+                                    android:gravity="center"
+                                    android:text="@string/intro1"
+                                    android:textColor="#FFFFFF"
+                                    android:textSize="18sp" />
+                            </LinearLayout>
                         </LinearLayout>
 
-                        <me.grantland.widget.AutofitTextView
-                            android:id="@+id/intro1"
+                        <TextView
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
-                            android:background="@drawable/pa_border"
-                            android:layout_weight="2"
-                            android:gravity="center"
-                            android:textColor="#FFFFFF"
-                            android:text="@string/intro1"
-                            android:textSize="18sp" />
+                            android:layout_weight="1" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="4"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:adjustViewBounds="true"
+                                android:background="#B7DA00"
+                                android:cropToPadding="true"
+                                android:padding="2dp"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/hero_we" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dp"
+                                    android:layout_weight="1"
+                                    android:orientation="horizontal">
+
+                                    <me.grantland.widget.AutofitTextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1"
+                                        android:background="@drawable/we_border"
+                                        android:gravity="center"
+                                        android:padding="2dp"
+                                        android:singleLine="true"
+                                        android:text="@string/heroS2"
+                                        android:textColor="@color/DeerHair"
+                                        android:textSize="30sp" />
+
+                                    <me.grantland.widget.AutofitLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1">
+
+                                        <Button
+                                            android:id="@+id/buy2"
+                                            style="@style/Widget.AppCompat.Button"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:background="@drawable/button_style2"
+                                            android:singleLine="true"
+                                            android:textColor="@android:color/background_dark"
+                                            android:textSize="50sp" />
+                                    </me.grantland.widget.AutofitLayout>
+
+                                </LinearLayout>
+
+                                <me.grantland.widget.AutofitTextView
+                                    android:id="@+id/intro2"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dp"
+                                    android:layout_weight="2"
+                                    android:background="@drawable/we_border"
+                                    android:gravity="center"
+                                    android:text="@string/intro2"
+                                    android:textColor="@color/DeerHair"
+                                    android:textSize="19sp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="4"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:adjustViewBounds="true"
+                                android:background="#B7DA00"
+                                android:cropToPadding="true"
+                                android:padding="2dp"
+                                android:scaleType="fitXY"
+                                android:src="@drawable/hero_ln"
+                                android:visibility="visible" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dp"
+                                    android:layout_weight="1"
+                                    android:orientation="horizontal">
+
+                                    <me.grantland.widget.AutofitTextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1"
+                                        android:background="@drawable/ln_border"
+                                        android:gravity="center"
+                                        android:padding="2dp"
+                                        android:singleLine="true"
+                                        android:text="@string/heroS3"
+                                        android:textColor="@color/SkinColor"
+                                        android:textSize="30sp" />
+
+                                    <me.grantland.widget.AutofitLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1">
+
+                                        <Button
+                                            android:id="@+id/buy3"
+                                            style="@style/Widget.AppCompat.Button"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:background="@drawable/button_style2"
+                                            android:singleLine="true"
+                                            android:textColor="@android:color/background_dark"
+                                            android:textSize="50sp" />
+                                    </me.grantland.widget.AutofitLayout>
+
+                                </LinearLayout>
+
+                                <me.grantland.widget.AutofitTextView
+                                    android:id="@+id/intro3"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dp"
+                                    android:layout_weight="2"
+                                    android:background="@drawable/ln_border"
+                                    android:gravity="center"
+                                    android:text="@string/intro3"
+                                    android:textColor="@color/SkinColor"
+                                    android:textSize="18sp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1" />
                     </LinearLayout>
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="4"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:adjustViewBounds="true"
-                        android:cropToPadding="true"
-                        android:background="#B7DA00"
-                        android:padding="2dp"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/hero_we" />
-
                     <LinearLayout
+                        android:visibility="invisible"
+                        android:id="@+id/store1"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical">
 
-                        <LinearLayout
+                        <TextView
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
-                            android:layout_weight="1"
-                            android:orientation="horizontal">
+                            android:layout_weight="0.2" />
 
-                            <me.grantland.widget.AutofitTextView
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:gravity="center"
-                                android:singleLine="true"
-                                android:background="@drawable/we_border"
-                                android:padding="2dp"
-                                android:text="@string/heroS2"
-                                android:textColor="@color/DeerHair"
-                                android:textSize="30sp" />
-
-                            <me.grantland.widget.AutofitLayout
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1">
-                            <Button
-                                android:layout_width="match_parent"
-                                android:id="@+id/buy2"
-                                android:layout_height="match_parent"
-                                android:textColor="@android:color/background_dark"
-                                android:textSize="50sp"
-                                android:singleLine="true"
-                                style="@style/Widget.AppCompat.Button"
-                                android:background="@drawable/button_style2"
-                                />
-                            </me.grantland.widget.AutofitLayout>
-
-                        </LinearLayout>
-
-                        <me.grantland.widget.AutofitTextView
-                            android:id="@+id/intro2"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="2"
-                            android:gravity="center"
-                            android:textColor="@color/DeerHair"
-                            android:text="@string/intro2"
-                            android:background="@drawable/we_border"
-                            android:textSize="19sp" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="4"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:adjustViewBounds="true"
-                        android:cropToPadding="true"
-                        android:background="#B7DA00"
-                        android:padding="2dp"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/hero_ln"
-                        android:visibility="visible" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
-                            android:layout_weight="1"
+                            android:layout_weight="4"
                             android:orientation="horizontal">
 
-                            <me.grantland.widget.AutofitTextView
-                                android:layout_width="0dp"
+                            <ImageView
+                                android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:gravity="center"
-                                android:singleLine="true"
-                                android:background="@drawable/ln_border"
+                                android:layout_gravity="center"
+                                android:adjustViewBounds="true"
+                                android:background="#B7DA00"
+                                android:cropToPadding="true"
                                 android:padding="2dp"
-                                android:text="@string/heroS3"
-                                android:textColor="@color/SkinColor"
-                                android:textSize="30sp" />
-                            <me.grantland.widget.AutofitLayout
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1">
-                            <Button
-                                android:layout_width="match_parent"
-                                android:id="@+id/buy3"
-                                style="@style/Widget.AppCompat.Button"
-                                android:background="@drawable/button_style2"
-                                android:textColor="@android:color/background_dark"
-                                android:textSize="50sp"
-                                android:singleLine="true"
-                                android:layout_height="match_parent"
-                                />
-                            </me.grantland.widget.AutofitLayout>
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/hero_vs" />
 
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dp"
+                                    android:layout_weight="1"
+                                    android:orientation="horizontal">
+
+                                    <me.grantland.widget.AutofitTextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1"
+                                        android:background="@drawable/vs_border"
+                                        android:gravity="center"
+                                        android:padding="2dp"
+                                        android:singleLine="true"
+                                        android:text="@string/heroS4"
+                                        android:textColor="@color/textColorOfVs"
+                                        android:textSize="30sp" />
+
+                                    <me.grantland.widget.AutofitLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1">
+
+                                        <Button
+                                            android:id="@+id/buy4"
+                                            style="@style/Widget.AppCompat.Button"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:background="@drawable/button_style2"
+                                            android:singleLine="true"
+                                            android:textColor="@android:color/background_dark"
+                                            android:textSize="50sp" />
+                                    </me.grantland.widget.AutofitLayout>
+
+                                </LinearLayout>
+
+                                <me.grantland.widget.AutofitTextView
+                                    android:id="@+id/intro4"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dp"
+                                    android:layout_weight="2"
+                                    android:background="@drawable/vs_border"
+                                    android:gravity="center"
+                                    android:text="@string/intro4"
+                                    android:textColor="@color/textColorOfVs"
+                                    android:textSize="18sp" />
+                            </LinearLayout>
                         </LinearLayout>
 
-                        <me.grantland.widget.AutofitTextView
-                            android:id="@+id/intro3"
-                            android:background="@drawable/ln_border"
+                        <TextView
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
-                            android:layout_weight="2"
-                            android:gravity="center"
-                            android:text="@string/intro3"
-                            android:textColor="@color/SkinColor"
-                            android:textSize="18sp" />
-                    </LinearLayout>
-                </LinearLayout>
+                            android:layout_weight="1" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="4"
+                            android:orientation="horizontal">
+                        <!--
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:adjustViewBounds="true"
+                                android:background="#B7DA00"
+                                android:cropToPadding="true"
+                                android:padding="2dp"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/hero_we" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dp"
+                                    android:layout_weight="1"
+                                    android:orientation="horizontal">
+
+                                    <me.grantland.widget.AutofitTextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1"
+                                        android:background="@drawable/we_border"
+                                        android:gravity="center"
+                                        android:padding="2dp"
+                                        android:singleLine="true"
+                                        android:text="@string/heroS2"
+                                        android:textColor="@color/DeerHair"
+                                        android:textSize="30sp" />
+
+                                    <me.grantland.widget.AutofitLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1">
+
+                                        <Button
+                                            android:id="@+id/buy2"
+                                            style="@style/Widget.AppCompat.Button"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:background="@drawable/button_style2"
+                                            android:singleLine="true"
+                                            android:textColor="@android:color/background_dark"
+                                            android:textSize="50sp" />
+                                    </me.grantland.widget.AutofitLayout>
+
+                                </LinearLayout>
+
+                                <me.grantland.widget.AutofitTextView
+                                    android:id="@+id/intro2"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dp"
+                                    android:layout_weight="2"
+                                    android:background="@drawable/we_border"
+                                    android:gravity="center"
+                                    android:text="@string/intro2"
+                                    android:textColor="@color/DeerHair"
+                                    android:textSize="19sp" />
+                            </LinearLayout>
+                            -->
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="4"
+                            android:orientation="horizontal">
+                            <!--
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:adjustViewBounds="true"
+                                android:background="#B7DA00"
+                                android:cropToPadding="true"
+                                android:padding="2dp"
+                                android:scaleType="fitXY"
+                                android:src="@drawable/hero_ln"
+                                android:visibility="visible" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dp"
+                                    android:layout_weight="1"
+                                    android:orientation="horizontal">
+
+                                    <me.grantland.widget.AutofitTextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1"
+                                        android:background="@drawable/ln_border"
+                                        android:gravity="center"
+                                        android:padding="2dp"
+                                        android:singleLine="true"
+                                        android:text="@string/heroS3"
+                                        android:textColor="@color/SkinColor"
+                                        android:textSize="30sp" />
+
+                                    <me.grantland.widget.AutofitLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1">
+
+                                        <Button
+                                            android:id="@+id/buy3"
+                                            style="@style/Widget.AppCompat.Button"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:background="@drawable/button_style2"
+                                            android:singleLine="true"
+                                            android:textColor="@android:color/background_dark"
+                                            android:textSize="50sp" />
+                                    </me.grantland.widget.AutofitLayout>
+
+                                </LinearLayout>
+
+                                <me.grantland.widget.AutofitTextView
+                                    android:id="@+id/intro3"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dp"
+                                    android:layout_weight="2"
+                                    android:background="@drawable/ln_border"
+                                    android:gravity="center"
+                                    android:text="@string/intro3"
+                                    android:textColor="@color/SkinColor"
+                                    android:textSize="18sp" />
+                            </LinearLayout>
+                            -->
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1" />
+                    </LinearLayout>
+                </FrameLayout>
+
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:orientation="vertical">
-            </LinearLayout>
+                android:orientation="vertical"></LinearLayout>
         </LinearLayout>
     </FrameLayout>
 </android.support.constraint.ConstraintLayout>

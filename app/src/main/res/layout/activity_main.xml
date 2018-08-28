@@ -7,7 +7,7 @@
     android:background="#818181"
     android:clipChildren="false"
     android:orientation="vertical"
-    tools:context="com.example.yuqiaohe.Dota2048.Activity.MainActivity">
+    tools:context="com.Dota2048.Activity.MainActivity">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -121,7 +121,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <com.example.yuqiaohe.Dota2048.Activity.GameView
+            <com.Dota2048.Activity.GameView
                 android:id="@+id/gameView"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
