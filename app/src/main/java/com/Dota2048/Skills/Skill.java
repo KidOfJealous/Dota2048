@@ -38,7 +38,7 @@ public class Skill {
         SkillLevel = s.getInt("skillLevel1",0);
         Price = (SkillLevel+1)*(SkillLevel+1)*100;
         parent=ma;
-        //init();
+        if(name.equals("default"))Refresh();
     }
     public int getVoice(){
         return 0;
@@ -97,12 +97,17 @@ public class Skill {
     }
     protected void initPriceString()
     {
+        if(SkillName.equals("default"))
+        {
+            PriceString="不可升级";
+            return;
+        }
         if(SkillLevel==3)PriceString="技能已升至满级";
         else PriceString="升级需要："+Price+"金币";
     }
     protected void initIntroString()
     {
-        PriceString="你还没有英雄";
+        IntroString="你没有使用技能";
     }
     public int getCoolDown() {
         return CoolDown;

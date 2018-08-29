@@ -120,7 +120,6 @@ public class GameView extends FrameLayout {
                 if(shines[x][y])
                 {
                     cardsMap[x][y].Shine(value[x][y],R.drawable.im_re);
-                    parent.play(4);
                 }
                 else cardsMap[x][y].setNum(value[x][y]);
                 cardsMap[x][y].Reset();

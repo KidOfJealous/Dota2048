@@ -14,6 +14,7 @@
     <string name="Bought">已&#160;购&#160;买</string>
     <string name="UnBought">购买</string>
     <string name="Use">启用</string>
+    <string name="hero0">不使用英雄 No Hero</string>
     <string name="hero1">幻影刺客&#160;Phantom Assassin</string>
     <string name="hero2">编织者&#160;Weaver</string>
     <string name="hero3">莉娜&#160;Lina</string>
@@ -26,6 +27,7 @@
     <string name="intro2">拥有技能时光倒流，可以回到几次操作之前的状态</string>
     <string name="intro3">拥有技能神灭斩，可以消除一个方块并获得一定的分值</string>
     <string name="intro4">拥有技能移形换位，可以交换两个方块的位置</string>
+    <string name="tips0">点击开始最有挑战性的无技能模式</string>
     <string name="tips1">大喊"暴暴暴"来增加暴击概率</string>
     <string name="tips2">如果游戏结束了就不能用了，所以请提前使用</string>
     <string name="tips3">消除一个大块可以获得高分，但也会少一个高分的组件</string>

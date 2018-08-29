@@ -14,7 +14,7 @@ public class Hero {
         if(id==0)return 0;
         return 100*(id+1)*(id+1);
     }
-    public  void bought(int id)
+    public void bought(int id)
     {
         SharedPreferences.Editor e= s.edit();
         e.putInt("Bought"+id,1);
@@ -24,7 +24,9 @@ public class Hero {
     {
         return (s.getInt("Bought1",0)+s.getInt("Bought2",0)+s.getInt("Bought3",0)+s.getInt("Bought4",0))==0;
     }
-    public  boolean isbought(int id) {
+    public  boolean isbought(int id)
+    {
+        if(id==0)return true;
         return s.getInt("Bought"+id, 0) == 1;
     }
 }

@@ -20,7 +20,9 @@ public class RequiemOfSouls extends Skill{
     @Override
     public double getMultiple()
     {
-        return (SkillLevel==0||Math.random()>=0.15)?1.0:(1.2+SkillLevel*1.1);
+        double multiple =  (SkillLevel==0||Math.random()>=0.15)?1.0:(1.2+SkillLevel*1.1);
+        if(multiple>2)parent.PlaySkillVoice();
+        return multiple;
     }
     @Override
     public int getVoice()
