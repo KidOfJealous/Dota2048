@@ -9,7 +9,8 @@
     <string name="CurL">当前技能等级：</string>
     <string name="SkiName">恩赐解脱</string>
     <string name="HeroStore">英雄商店</string>
-    <string name="StartGame">新游戏</string>
+    <string name="StartGame">普通模式</string>
+    <string name="HardGame">困难模式</string>
     <string name="LoadGame">继续游戏</string>
     <string name="Bought">已&#160;购&#160;买</string>
     <string name="UnBought">购买</string>

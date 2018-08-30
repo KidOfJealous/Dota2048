@@ -90,6 +90,7 @@ public class MainActivity extends Activity {
     private long exitTime;
     private boolean merge;
     private boolean battling;
+    private boolean hardGame;
     private int num;
 
 
@@ -136,6 +137,11 @@ public class MainActivity extends Activity {
         }
         return super.onKeyDown(keyCode, event);
     }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mp.release();
+    }
 
     public void showTextToast(String msg) {
         if (toast != null) toast.cancel();
@@ -147,32 +153,20 @@ public class MainActivity extends Activity {
 
         try {
             File dir = new File(fileDirPath);// 目录路径
-            if (!dir.exists()) {// 如果不存在，则创建路径名
-                System.out.println("要存储的目录不存在");
-                if (dir.mkdirs()) {// 创建该路径名，返回true则表示创建成功
-                    System.out.println("已经创建文件存储目录");
-                } else {
-                    System.out.println("创建目录失败");
-                }
-            }
+            if (!dir.exists())dir.mkdirs();
             res = getResources();
             for (int i = 0; i < BackNum; ++i) {
                 String filePath = fileDirPath + "/" + fileName[i];// 文件路径
                 File file = new File(filePath);
-                if (!file.exists()) {// 文件不存在
-                    System.out.println("要打开的文件不存在");
-                    InputStream ins = getResources().openRawResource(
-                            resource[i]);// 通过raw得到数据资源
-                    System.out.println("开始读入");
+                if (!file.exists()) {
+                    InputStream ins = getResources().openRawResource(resource[i]);
                     FileOutputStream fos = new FileOutputStream(file);
-                    System.out.println("开始写出");
                     byte[] buffer = new byte[8192];
                     int count = 0;
                     while ((count = ins.read(buffer)) > 0) {
                         fos.write(buffer, 0, count);
                     }
-                    System.out.println("已经创建该文件");
-                    fos.close();// 关闭流
+                    fos.close();
                     ins.close();
                 }
             }
@@ -190,10 +184,8 @@ public class MainActivity extends Activity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         bestScores = 0;
-                        BestScore BS = new BestScore(MainActivity.this);
-                        BS.setBestScode(0);
-                        if (tvBestScore != null) tvBestScore.setText(bestScores + "");
-                        if (tvMaxLevel != null) tvMaxLevel.setText(getLevel(bestScores));
+                        new BestScore(MainActivity.this,hardGame).setBestScode(0);
+                        showBestScore();
                         dialogInterface.dismiss();
                     }
                 });
@@ -236,9 +228,7 @@ public class MainActivity extends Activity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //mp.start();
     }
-
 
     private void setGameView() {
         setContentView(R.layout.activity_main);
@@ -294,13 +284,11 @@ public class MainActivity extends Activity {
                             }
                             break;
                     }
-                    store();
+                    storeRecord();
                     return true;
                 }
             });
         }
-        BestScore BS = new BestScore(this);
-        bestScores = BS.getBestScode();
     }
 
     private void setView() {
@@ -321,26 +309,20 @@ public class MainActivity extends Activity {
 
     public void clearScore() {
         score = 0;
-        showScore();
     }
 
     private void showScore() {
-        if (tvScore != null) tvScore.setText(score + "");
+        if (tvScore != null) tvScore.setText("当前天梯分："+score);
         if (tvLevel != null) tvLevel.setText(getLevel(score));
     }
 
     public void addScore(int s) {
         score += s;
-        Log.d("hi", String.valueOf(bestScores));
         showScore();
-        Log.d("score", String.valueOf(score));
         if (score > bestScores) {
-            Log.d("Highesr", "best");
             bestScores = score;
-            BestScore bs = new BestScore(this);
-            bs.setBestScode(bestScores);
-            if (tvBestScore != null) tvBestScore.setText(bestScores + "");
-            if (tvMaxLevel != null) tvMaxLevel.setText(getLevel(score));
+            new BestScore(this,hardGame).setBestScode(bestScores);
+            showBestScore();
         }
     }
 
@@ -360,19 +342,20 @@ public class MainActivity extends Activity {
         setCoolImage();
     }
 
-    private void store() {
+    private void storeRecord() {
         SharedPreferences s = this.getSharedPreferences("currentPosition", this.MODE_PRIVATE);
         SharedPreferences.Editor editor = s.edit();
         for (int i = 0; i < 4; ++i)
             for (int j = 0; j < 4; ++j) {
                 editor.putInt("currentBlock" + i + ":" + j, value[i][j]);
             }
+            editor.putBoolean("hardGame",hardGame);
         editor.apply();
         s = this.getSharedPreferences("Score", this.MODE_PRIVATE);
         editor = s.edit();
         editor.putInt("currentScore", score);
         editor.apply();
-        new BestScore(this).setBestScode(bestScores);
+        new BestScore(this,hardGame).setBestScode(bestScores);
     }
 
     private void loadRecord() {
@@ -382,8 +365,11 @@ public class MainActivity extends Activity {
                 value[i][j] = s.getInt("currentBlock" + i + ":" + j, 0);
             }
         mySkill = SkillFactory.CreateSkill(this, s.getInt("SkillUsing", 0), this);
+        hardGame = s.getBoolean("hardGame",false);
         s = this.getSharedPreferences("Score", this.MODE_PRIVATE);
         score = s.getInt("currentScore", 100);
+        BestScore BS = new BestScore(this,hardGame);
+        bestScores = BS.getBestScode();
     }
 
     private void startGame() {
@@ -394,6 +380,7 @@ public class MainActivity extends Activity {
             for (int j = 0; j < 4; j++)
                 if (value[i][j] > 0) num++;
         if (num == 0) Restart();
+        setCoolImage();
         check();
         gv.setAll();
     }
@@ -408,6 +395,9 @@ public class MainActivity extends Activity {
             public void onClick(View view) {
                 calculateGold();
                 Restart();
+                showScore();
+                gv.setAll();
+                setCoolImage();
                 playMusic(2);
             }
         });
@@ -447,7 +437,7 @@ public class MainActivity extends Activity {
     }
 
     private void setTexts() {
-        tvBestScore = findViewById(R.id.maxScore);
+        tvBestScore = findViewById(R.id.maxscore);
         tvScore = findViewById(R.id.tvScore);
         tvLevel = findViewById(R.id.level);
         tvMaxLevel = findViewById(R.id.maxlevel);
@@ -455,9 +445,10 @@ public class MainActivity extends Activity {
         tvPrice = findViewById(R.id.Price);
         tvGold = findViewById(R.id.Gold);
         tvSkill = findViewById(R.id.SkillName);
+        TextView gameMode = findViewById(R.id.GameMode);
+        gameMode.setText(hardGame?"困难模式":"普通模式");
         if (tvSkill != null) tvSkill.setText(mySkill.getSkillName());
-        if (tvBestScore != null) tvBestScore.setText(bestScores + "");
-        if (tvMaxLevel != null) tvMaxLevel.setText(getLevel(bestScores));
+        showBestScore();
         if (tvIntro != null) {
             tvIntro.setText(mySkill.getIntroString());
         }
@@ -485,8 +476,9 @@ public class MainActivity extends Activity {
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        gv.setAll();
                         addRandomNum();
+                        if(hardGame&&num<=14)addRandomNum();
+                        gv.setAll();
                         check();
                         move = true;
                     }
@@ -522,20 +514,11 @@ public class MainActivity extends Activity {
                 }
             }
         }
-        calculateGold();
-        playMusic(1);
-        mp.pause();
-        new AlertDialog.Builder(MainActivity.this).setTitle("比赛结束").setMessage("你失败了").setPositiveButton("重新匹配", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                playMusic(2);
-                Restart();
-                mp.start();
-            }
-        }).show();
+        showEnd();
     }
 
     public void Restart() {
+        Clear();
         num = 0;
         battling = false;
         move = true;
@@ -545,23 +528,22 @@ public class MainActivity extends Activity {
                 shines[x][y] = false;
             }
         }
-        switchMusic(1);
         clearScore();
         showGold();
         addRandomNum();
         addRandomNum();
         mySkill.init();
-        gv.setAll();
-        setCoolImage();
-        store();
+        storeRecord();
     }
 
     public void ReBegin() {
         loadRecord();
         calculateGold();
         Restart();
+        showScore();
+        setCoolImage();
         gv.setAll();
-        store();
+        storeRecord();
     }
 
     public int[][] Export() {
@@ -572,6 +554,34 @@ public class MainActivity extends Activity {
         values[4][0] = bestScores;
         values[4][1] = score;
         return values;
+    }
+
+    private void showEnd()
+    {
+        playMusic(1);
+        mp.pause();
+        Restart();
+        AlertDialog.Builder b = new AlertDialog.Builder (MainActivity.this);
+        b.setTitle("比赛结束").setMessage("你失败了").setPositiveButton("重新匹配", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                playMusic(2);
+                gv.setAll();
+                showScore();
+                setCoolImage();
+                mp.start();
+            }
+        });
+        b.setNegativeButton("返回菜单", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                storeRecord();
+                switchMusic(0);
+                setContentView(R.layout.activity_menu);
+                setMenuButtons();
+            }
+        });
+        b.show();
     }
 
     public void Load(int[][] values) {
@@ -587,13 +597,15 @@ public class MainActivity extends Activity {
         bestScores = values[4][0];
         score = values[4][1];
         gv.SetAll(R.drawable.im_tl);
-        store();
+        storeRecord();
         showScore();
-        if (tvBestScore != null) tvBestScore.setText(bestScores + "");
-        if (tvMaxLevel != null) tvMaxLevel.setText(getLevel(score));
         check();
     }
-
+    private void showBestScore()
+    {
+        if (tvBestScore != null) tvBestScore.setText("最高天梯分："+bestScores);
+        if (tvMaxLevel != null) tvMaxLevel.setText(getLevel(bestScores));
+    }
     private void addRandomNum() {
         points.clear();
         for (int y = 0; y < 4; y++) {
@@ -603,11 +615,15 @@ public class MainActivity extends Activity {
                 }
             }
         }
+        if(points.size()==0)
+        {
+            showEnd();
+            return;
+        }
         Point p = points.remove((int) (Math.random() * points.size()));
         value[p.x][p.y] = (Math.random() > 0.1 ? 2 : 4);
         num++;
-        gv.setAll();
-        store();
+        storeRecord();
     }
 
     public void setCoolImage() {
@@ -780,20 +796,15 @@ public class MainActivity extends Activity {
     }
 
     private void calculateGold() {
+        int base = hardGame?550:750;
         Gold g = new Gold(this);
-        if (score <= 3000) g.addGold(score / 750);
-        else if (score <= 6000) g.addGold(score / 750 + 5);
-        else if (score <= 12000) g.addGold(score / 750 + 10);
-        else if (score <= 24000) g.addGold(score / 750 + 15);
-        else if (score <= 40000) g.addGold(score / 725 + 20);
-        else if (score <= 60000) g.addGold(score / 725 + 25);
-        else g.addGold(score / 700 + 30);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mp.release();
+        if (score <= 3000) g.addGold(score / base);
+        else if (score <= 6000) g.addGold(score / base + 5);
+        else if (score <= 12000) g.addGold(score / base + 10);
+        else if (score <= 24000) g.addGold(score / base + 15);
+        else if (score <= 40000) g.addGold(score / (base-25) + 20);
+        else if (score <= 60000) g.addGold(score / (base-25) + 25);
+        else g.addGold(score / (base-50) + 30);
     }
 
     private void setMenuButtons() {
@@ -801,37 +812,46 @@ public class MainActivity extends Activity {
         Button ld = findViewById(R.id.LoadGame);
         Button rs = findViewById(R.id.StartGame);
         Button hs = findViewById(R.id.HeroStore);
-        if (hs != null) {
-            hs.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    setContentView(R.layout.activity_store);
-                    setStoreButtons();
-                }
-            });
-        }
-        if (ld != null) {
-            ld.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    setGameView();
-                    startGame();
-                    setView();
-                    switchMusic(1);
+        Button hg = findViewById(R.id.HardGame);
+        hs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_store);
+                setStoreButtons();
+            }
+        });
+        ld.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setGameView();
+                startGame();
+                setView();
+                switchMusic(1);
 
-                }
-            });
-        }
-        if (rs != null) {
-            rs.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    setContentView(R.layout.activity_enter);
-                    setEnterButtons();
-                    switchMusic(2);
-                }
-            });
-        }
+            }
+        });
+        rs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor e = MainActivity.this.getSharedPreferences("currentPosition",MODE_PRIVATE).edit();
+                e.putBoolean("hardGame",false);
+                e.apply();
+                setContentView(R.layout.activity_enter);
+                setEnterButtons();
+                switchMusic(2);
+            }
+        });
+        hg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor e = MainActivity.this.getSharedPreferences("currentPosition",MODE_PRIVATE).edit();
+                e.putBoolean("hardGame",true);
+                e.apply();
+                setContentView(R.layout.activity_enter);
+                setEnterButtons();
+                switchMusic(2);
+            }
+        });
     }
 
     private void setStoreButtons() {
@@ -858,7 +878,7 @@ public class MainActivity extends Activity {
             }
         });
         for (int i = 0; i < pages; ++i) {
-            int id = res.getIdentifier("store" + i, "id", getPackageName());
+            int id = res.getIdentifier("storeRecord" + i, "id", getPackageName());
             stores[i] = findViewById(id);
         }
         for (int i = 1; i <= HeroNums; ++i) {
