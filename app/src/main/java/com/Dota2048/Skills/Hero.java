@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 public class Hero {
+    public static final int HeroNums = 4;
     public  SharedPreferences s;
     public Hero(Context context)
     {
@@ -22,7 +23,9 @@ public class Hero {
     }
     public  boolean hasNone()
     {
-        return (s.getInt("Bought1",0)+s.getInt("Bought2",0)+s.getInt("Bought3",0)+s.getInt("Bought4",0))==0;
+        int k = 0;
+        for(int i=1;i<=HeroNums;++i) k+=s.getInt("Bought"+i,0);
+        return k==0;
     }
     public  boolean isbought(int id)
     {

@@ -1,6 +1,7 @@
 package com.Dota2048.Activity;
 
 import android.content.Context;
+import android.graphics.ColorMatrixColorFilter;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -115,5 +116,6 @@ public class Card extends FrameLayout{
         label.setLayoutParams(la);
         label.layout(left, top, left+width, top+height);
     }
+    public void setColorFilter(ColorMatrixColorFilter cf){label.setColorFilter(cf);}
 }
 

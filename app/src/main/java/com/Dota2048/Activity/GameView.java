@@ -2,6 +2,8 @@ package com.Dota2048.Activity;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Point;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -161,5 +163,11 @@ public class GameView extends FrameLayout {
         int yy = ((int)(y/w));
         return new Point(xx,yy);
     }
-
+    public void Brighter(int x,int y,int Brightness)
+    {
+        ColorMatrix matrix = new ColorMatrix();
+        matrix.set(new float[]{1, 0, 0, 0, Brightness, 0, 1, 0, 0, Brightness, 0, 0, 1, 0, Brightness, 0, 0, 0, 1, 0});
+        ColorMatrixColorFilter cmcf = new ColorMatrixColorFilter(matrix);
+        cardsMap[x][y].setColorFilter(cmcf);
+    }
 }

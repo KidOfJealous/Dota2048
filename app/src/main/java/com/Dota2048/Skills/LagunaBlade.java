@@ -37,7 +37,6 @@ public class LagunaBlade extends Skill {
         }
         if(CurrentCool==0){
             waitForClick();
-            clearPoints();
             parent.showTextToast("点击一个方块来摧毁");
             return true;
         }
@@ -56,8 +55,9 @@ public class LagunaBlade extends Skill {
             CurrentCool=CoolDown;
             parent.setCoolImage();
             write("currentCool",CurrentCool);
-            parent.PlaySkillVoice();
+            parent.playSkillVoice();
         }
+        clearPoints();
     }
     @Override
     public int getVoice()

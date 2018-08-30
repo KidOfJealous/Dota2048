@@ -35,11 +35,11 @@ public class NetherSwap extends Skill {
         {
             cancelWait();
             parent.showTextToast("技能取消");
+            clearPoints();
             return false;
         }
         if(CurrentCool==0){
             waitForClick();
-            clearPoints();
             parent.showTextToast("点击两个方块来交换");
             return true;
         }
@@ -58,8 +58,9 @@ public class NetherSwap extends Skill {
             CurrentCool=CoolDown;
             parent.setCoolImage();
             write("currentCool",CurrentCool);
-            parent.PlaySkillVoice();
+            parent.playSkillVoice();
         }
+        clearPoints();
     }
     @Override
     public int getVoice()

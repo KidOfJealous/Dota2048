@@ -43,61 +43,104 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.grantland.widget.AutofitTextView;
+import static com.Dota2048.Skills.Hero.HeroNums;
 
 
 public class MainActivity extends Activity {
-    private String fileDirPath = android.os.Environment
-            .getExternalStorageDirectory().getAbsolutePath()// 得到外部存储卡的数据库的路径名
-            + "/Dota2048/data/background";// 我要存储的目录
-    private String[] fileName = {"menu.mp3", "game.mp3", "heroselect.wav","battle.wav"};
-    private int[] resource = {R.raw.menu, R.raw.game, R.raw.heroselect,R.raw.battle};
+    private final String fileDirPath = android.os.Environment.getExternalStorageDirectory().getAbsolutePath()
+            + "/Dota2048/data/background";
+    private final String[] fileName = {"menu.mp3", "game.mp3", "heroselect.wav", "battle.wav"};
+    private final String[] levels = {"先锋", "卫士", "中军", "统帅", "传奇", "万古流芳", "超凡入圣", "冠绝一世"};
+    private final int[] resource = {R.raw.menu, R.raw.game, R.raw.heroselect, R.raw.battle};
     private final int BackNum = 4;
-    private final int ExceptNum = 3;
-    private boolean battling = false;
-    private int num =0;
-    private SoundPool mSoundPoll = new SoundPool(100, AudioManager.STREAM_MUSIC, 0);
+    private final int MusicNum = 3;
+    private final int pages = HeroNums / 3 + 1;
+    private final List<Point> points = new ArrayList<>();
+    private final SoundPool mSoundPoll = new SoundPool(100, AudioManager.STREAM_MUSIC, 0);
+
+    private final int[][] value = new int[4][4];
+    private final boolean[][] shines = new boolean[4][4];
+    private Animation[][] animes = new TranslateAnimation[4][4];
+    private LinearLayout[] enters;
+    public LinearLayout[] stores;
+
     public TextView tvScore;//计分的
     public TextView tvBestScore;//最高分
     public TextView tvMaxLevel;
     public TextView tvLevel;
     public TextView tvIntro;
     public TextView tvPrice;
-    private boolean merge;
     public TextView tvGold;
     public TextView tvSkill;
     public TextView tvStore;
+
     private MediaPlayer mp = new MediaPlayer();
-    public LinearLayout[] stores;
     public Handler mainHandler;
-    private final int HeroNums = 4;
-    final int pages = HeroNums / 3 + 1;
     private Toast toast;
     public ImageView sk;
-    private String[] levels = {"先锋", "卫士", "中军", "统帅", "传奇", "万古流芳", "超凡入圣", "冠绝一世"};
     private int score;
-    private int bestScores;//历史最高成绩
-    //private RequiemOfSouls Re;
+    private int bestScores;
     private int contentView;
     private GameView gv;
-    private int[][] value = new int[4][4];
-    private boolean[][] shines = new boolean[4][4];
+
     public Skill mySkill;
     private boolean move = true;
-    private List<Point> points = new ArrayList<>();
-    private Animation[][] animes = new TranslateAnimation[4][4];
     private Resources res;
     private int currentPage = 0;
-    private LinearLayout[] enters;
+    private long exitTime;
+    private boolean merge;
+    private boolean battling;
+    private int num;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mainHandler = new Handler();
+        setContentView(R.layout.activity_menu);
+        setMenuButtons();
+        createFile();
+        importMusic();
+        mp.start();
+
+    }
+    @Override
+    protected void onStop() {
+        Intent intent = new Intent(MainActivity.this, BackgroundMusic.class);
+        stopService(intent);
+        super.onStop();
+
+    }
+    @SuppressLint("WrongConstant")
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if (keyCode == KeyEvent.KEYCODE_BACK
+                && event.getAction() == KeyEvent.ACTION_DOWN) {
+            if (contentView == R.layout.activity_enter || contentView == R.layout.activity_store || contentView == R.layout.activity_main) {
+                Clear();
+                if (contentView != R.layout.activity_store) switchMusic(0);
+                setContentView(R.layout.activity_menu);
+                setMenuButtons();
+            } else {
+
+                if ((System.currentTimeMillis() - exitTime) > 2000) {
+                    showTextToast("再按一次返回键退出");
+                    exitTime = System.currentTimeMillis();
+                } else {
+                    this.finish();
+                    System.exit(0);
+                    Log.d("exit", "exit");
+                }
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
     public void showTextToast(String msg) {
         if (toast != null) toast.cancel();
         toast = Toast.makeText(this, msg, Toast.LENGTH_SHORT);
         toast.show();
-    }
-
-    public MainActivity() {
-        Log.d("mainActivity", "created");
     }
 
     private void createFile() {
@@ -124,7 +167,7 @@ public class MainActivity extends Activity {
                     FileOutputStream fos = new FileOutputStream(file);
                     System.out.println("开始写出");
                     byte[] buffer = new byte[8192];
-                    int count = 0;// 循环写出
+                    int count = 0;
                     while ((count = ins.read(buffer)) > 0) {
                         fos.write(buffer, 0, count);
                     }
@@ -138,7 +181,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void showDialog() {
+    private void clearBest() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("清除最高分记录");
         builder.setMessage("你确定要清除最高分吗");
@@ -165,28 +208,16 @@ public class MainActivity extends Activity {
         dialog.show();
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mainHandler = new Handler();
-        setContentView(R.layout.activity_menu);
-        setMenuButtons();
-        createFile();
-        importMusic();
-        mp.start();
-
+    public void playSkillVoice() {
+        if (mySkill.getSkillId() == 0) return;
+        int id = mySkill.getSkillId() * 2 + MusicNum - 1;
+        playMusic(id);
     }
 
-    public void PlaySkillVoice() {
+    private void playAttackVoice() {
         if (mySkill.getSkillId() == 0) return;
-        int id = mySkill.getSkillId() * 2 + ExceptNum - 1;
-        play(id);
-    }
-
-    private void PlayAttackVoice() {
-        if (mySkill.getSkillId() == 0) return;
-        int id = mySkill.getSkillId() * 2 + ExceptNum;
-        play(id);
+        int id = mySkill.getSkillId() * 2 + MusicNum;
+        playMusic(id);
     }
 
     private void importMusic() {
@@ -194,7 +225,7 @@ public class MainActivity extends Activity {
         mSoundPoll.load(this, R.raw.respawn, 1);
         mSoundPoll.load(this, R.raw.levelup, 1);
         res = getResources();
-        for (int i = 1; i <= HeroNums; ++i) {
+        for (int i = 1; i <= Hero.HeroNums; ++i) {
             mSoundPoll.load(this, res.getIdentifier("voice_skill_" + i, "raw", getPackageName()), 1);
             mSoundPoll.load(this, res.getIdentifier("voice_attack_" + i, "raw", getPackageName()), 1);
         }
@@ -208,15 +239,8 @@ public class MainActivity extends Activity {
         //mp.start();
     }
 
-    @Override
-    protected void onStop() {
-        Intent intent = new Intent(MainActivity.this, BackgroundMusic.class);
-        stopService(intent);
-        super.onStop();
 
-    }
-
-    public void setGameView() {
+    private void setGameView() {
         setContentView(R.layout.activity_main);
         contentView = R.layout.activity_main;
         gv = findViewById(R.id.gameView);
@@ -264,7 +288,7 @@ public class MainActivity extends Activity {
                                 }
                             }
                             if (merge) {
-                                PlayAttackVoice();
+                                playAttackVoice();
                                 Cool();
                                 gv.StartAnimes(animes);
                             }
@@ -279,7 +303,7 @@ public class MainActivity extends Activity {
         bestScores = BS.getBestScode();
     }
 
-    public void setView() {
+    private void setView() {
         setButtons();
         setTexts();
         showScore();
@@ -300,7 +324,7 @@ public class MainActivity extends Activity {
         showScore();
     }
 
-    public void showScore() {
+    private void showScore() {
         if (tvScore != null) tvScore.setText(score + "");
         if (tvLevel != null) tvLevel.setText(getLevel(score));
     }
@@ -320,7 +344,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    public String getLevel(int s) {
+    private String getLevel(int s) {
         if (s <= 500) return levels[0];
         if (s <= 2000) return levels[1];
         if (s <= 5000) return levels[2];
@@ -331,40 +355,12 @@ public class MainActivity extends Activity {
         return levels[7];
     }
 
-    private long exitTime = 0;
-
-    @SuppressLint("WrongConstant")
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-
-        if (keyCode == KeyEvent.KEYCODE_BACK
-                && event.getAction() == KeyEvent.ACTION_DOWN) {
-            if (contentView == R.layout.activity_enter || contentView == R.layout.activity_store || contentView == R.layout.activity_main) {
-                Clear();
-                if (contentView != R.layout.activity_store) SwitchMusic(0);
-                setContentView(R.layout.activity_menu);
-                setMenuButtons();
-            } else {
-
-                if ((System.currentTimeMillis() - exitTime) > 2000) {
-                    showTextToast("再按一次返回键退出");
-                    exitTime = System.currentTimeMillis();
-                } else {
-                    this.finish();
-                    System.exit(0);
-                    Log.d("exit", "exit");
-                }
-            }
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    public void Cool() {
+    private void Cool() {
         mySkill.Cool();
         setCoolImage();
     }
 
-    public void store() {
+    private void store() {
         SharedPreferences s = this.getSharedPreferences("currentPosition", this.MODE_PRIVATE);
         SharedPreferences.Editor editor = s.edit();
         for (int i = 0; i < 4; ++i)
@@ -379,7 +375,7 @@ public class MainActivity extends Activity {
         new BestScore(this).setBestScode(bestScores);
     }
 
-    public void load() {
+    private void loadRecord() {
         SharedPreferences s = this.getSharedPreferences("currentPosition", this.MODE_PRIVATE);
         for (int i = 0; i < 4; ++i)
             for (int j = 0; j < 4; ++j) {
@@ -390,10 +386,10 @@ public class MainActivity extends Activity {
         score = s.getInt("currentScore", 100);
     }
 
-    public void startGame() {
-        load();
+    private void startGame() {
+        loadRecord();
         num = 0;
-        battling=false;
+        battling = false;
         for (int i = 0; i < 4; i++)
             for (int j = 0; j < 4; j++)
                 if (value[i][j] > 0) num++;
@@ -412,20 +408,21 @@ public class MainActivity extends Activity {
             public void onClick(View view) {
                 calculateGold();
                 Restart();
-                play(2);
+                playMusic(2);
             }
         });
         if (cl != null) cl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDialog();
+                clearBest();
             }
         });
         if (us != null) us.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Gold g = new Gold(MainActivity.this);
-                if (!mySkill.getSkillName().equals("default")&&mySkill.getSkillLevel() < 3 && g.buy(mySkill.getPrice())) mySkill.levelUp();
+                if (!mySkill.getSkillName().equals("default") && mySkill.getSkillLevel() < 3 && g.buy(mySkill.getPrice()))
+                    mySkill.levelUp();
                 showGold();
                 showGold();
                 if (tvPrice != null) {
@@ -473,7 +470,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    public void setAnimes(final int x, final int y, final int x1, final int y1) {
+    private void setAnimes(final int x, final int y, final int x1, final int y1) {
         int w = gv.getCardWitch();
         TranslateAnimation animation = new TranslateAnimation(0, (x1 - x) * w, 0, (y1 - y) * w);
         animation.setDuration(120);
@@ -504,19 +501,14 @@ public class MainActivity extends Activity {
     }
 
     private void check() {
-        if(num<16)
-        {
-            if(num>=12&&!battling)
-            {
-                SwitchMusic(3);
-                battling=true;
+        if (num <= 16) {
+            if (num >= 15 && !battling) {
+                switchMusic(3);
+                battling = true;
+            } else if (num < 13 && battling) {
+                switchMusic(1);
+                battling = false;
             }
-            else if(num<12&&battling)
-            {
-                SwitchMusic(1);
-                battling=false;
-            }
-            return;
         }
         for (int y = 0; y < 4; y++) {
             for (int x = 0; x < 4; x++) {
@@ -525,17 +517,18 @@ public class MainActivity extends Activity {
                         (x < 3 && value[x][y] == (value[x + 1][y])) ||
                         (y > 0 && value[x][y] == value[x][y - 1]) ||
                         (y < 3 && value[x][y] == value[x][y + 1])) {
+
                     return;
                 }
             }
         }
         calculateGold();
-        play(1);
+        playMusic(1);
         mp.pause();
         new AlertDialog.Builder(MainActivity.this).setTitle("比赛结束").setMessage("你失败了").setPositiveButton("重新匹配", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                play(2);
+                playMusic(2);
                 Restart();
                 mp.start();
             }
@@ -544,7 +537,7 @@ public class MainActivity extends Activity {
 
     public void Restart() {
         num = 0;
-        battling=false;
+        battling = false;
         move = true;
         for (int y = 0; y < 4; y++) {
             for (int x = 0; x < 4; x++) {
@@ -552,7 +545,7 @@ public class MainActivity extends Activity {
                 shines[x][y] = false;
             }
         }
-        SwitchMusic(1);
+        switchMusic(1);
         clearScore();
         showGold();
         addRandomNum();
@@ -564,7 +557,7 @@ public class MainActivity extends Activity {
     }
 
     public void ReBegin() {
-        load();
+        loadRecord();
         calculateGold();
         Restart();
         gv.setAll();
@@ -582,12 +575,15 @@ public class MainActivity extends Activity {
     }
 
     public void Load(int[][] values) {
+        num = 0;
         for (int i = 0; i < 4; ++i)
             for (int j = 0; j < 4; ++j) {
                 Log.d(values[i][j] + "", value[i][j] + "");
                 shines[i][j] = (values[i][j] > 0 || value[i][j] > 0);
                 value[i][j] = values[i][j];
+                if (value[i][j] > 0) num++;
             }
+
         bestScores = values[4][0];
         score = values[4][1];
         gv.SetAll(R.drawable.im_tl);
@@ -595,6 +591,7 @@ public class MainActivity extends Activity {
         showScore();
         if (tvBestScore != null) tvBestScore.setText(bestScores + "");
         if (tvMaxLevel != null) tvMaxLevel.setText(getLevel(score));
+        check();
     }
 
     private void addRandomNum() {
@@ -668,7 +665,7 @@ public class MainActivity extends Activity {
             }
         }
         if (merge) {
-            PlayAttackVoice();
+            playAttackVoice();
             Cool();
             gv.StartAnimes(animes);
         }
@@ -705,7 +702,7 @@ public class MainActivity extends Activity {
             }
         }
         if (merge) {
-            PlayAttackVoice();
+            playAttackVoice();
             Cool();
             gv.StartAnimes(animes);
         }
@@ -744,7 +741,7 @@ public class MainActivity extends Activity {
             }
         }
         if (merge) {
-            PlayAttackVoice();
+            playAttackVoice();
             Cool();
             gv.StartAnimes(animes);
         }
@@ -820,7 +817,7 @@ public class MainActivity extends Activity {
                     setGameView();
                     startGame();
                     setView();
-                    SwitchMusic(1);
+                    switchMusic(1);
 
                 }
             });
@@ -831,7 +828,7 @@ public class MainActivity extends Activity {
                 public void onClick(View v) {
                     setContentView(R.layout.activity_enter);
                     setEnterButtons();
-                    SwitchMusic(2);
+                    switchMusic(2);
                 }
             });
         }
@@ -851,13 +848,13 @@ public class MainActivity extends Activity {
         np.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.this.NextStore();
+                MainActivity.this.nextStore();
             }
         });
         pp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.this.PreStore();
+                MainActivity.this.preStore();
             }
         });
         for (int i = 0; i < pages; ++i) {
@@ -907,11 +904,11 @@ public class MainActivity extends Activity {
                         if (Math.abs(offsetX) > Math.abs(offsetY)) {//这个是防止斜着化
                             if (offsetX < -limit) {
                                 Log.d("move", "left");
-                                NextStore();
+                                nextStore();
 
                             } else if (offsetX > limit) {
                                 Log.d("move", "right");
-                                PreStore();
+                                preStore();
                             }
                             break;
                         }
@@ -927,7 +924,7 @@ public class MainActivity extends Activity {
         res = getResources();
         final Hero hero = new Hero(this);
         contentView = R.layout.activity_enter;
-        ImageView[] use = new ImageView[HeroNums+1];
+        ImageView[] use = new ImageView[HeroNums + 1];
         enters = new LinearLayout[pages];
         for (int i = 0; i < pages; ++i) {
             int id = res.getIdentifier("enter" + i, "id", getPackageName());
@@ -940,13 +937,13 @@ public class MainActivity extends Activity {
         np.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.this.NextEnter();
+                MainActivity.this.nextEnter();
             }
         });
         pp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.this.PreEnter();
+                MainActivity.this.preEnter();
             }
         });
         for (int i = 0; i <= HeroNums; i++) {
@@ -962,7 +959,7 @@ public class MainActivity extends Activity {
                         setGameView();
                         ReBegin();
                         setView();
-                        SwitchMusic(1);
+                        switchMusic(1);
                     } else showTextToast("你没有这个英雄");
                 }
             });
@@ -987,11 +984,11 @@ public class MainActivity extends Activity {
                         if (Math.abs(offsetX) > Math.abs(offsetY)) {//这个是防止斜着化
                             if (offsetX < -limit) {
                                 Log.d("move", "left");
-                                NextEnter();
+                                nextEnter();
 
                             } else if (offsetX > limit) {
                                 Log.d("move", "right");
-                                PreEnter();
+                                preEnter();
                             }
                             break;
                         }
@@ -1001,7 +998,7 @@ public class MainActivity extends Activity {
         });
     }
 
-    public void NextStore() {
+    public void nextStore() {
         if (currentPage == pages - 1) {
             showTextToast("已经最后一页了");
             return;
@@ -1010,7 +1007,7 @@ public class MainActivity extends Activity {
         stores[++currentPage].setVisibility(View.VISIBLE);
     }
 
-    public void PreStore() {
+    public void preStore() {
         if (currentPage == 0) {
             showTextToast("已经第一页了");
             return;
@@ -1019,7 +1016,7 @@ public class MainActivity extends Activity {
         stores[--currentPage].setVisibility(View.VISIBLE);
     }
 
-    public void NextEnter() {
+    public void nextEnter() {
         if (currentPage == pages - 1) {
             showTextToast("已经最后一页了");
             return;
@@ -1028,7 +1025,7 @@ public class MainActivity extends Activity {
         enters[++currentPage].setVisibility(View.VISIBLE);
     }
 
-    public void PreEnter() {
+    public void preEnter() {
         if (currentPage == 0) {
             showTextToast("已经第一页了");
             return;
@@ -1054,6 +1051,7 @@ public class MainActivity extends Activity {
         while ((p >>= 1) > 1) {
             ss += s;
         }
+        num--;
         value[x][y] = 0;
         addScore(ss);
         showTextToast("摧毁成功，获得" + ss + "分");
@@ -1062,6 +1060,7 @@ public class MainActivity extends Activity {
                 shines[i][j] = false;
         shines[x][y] = true;
         gv.SetAll(R.drawable.im_lb);
+        check();
         return ss;
     }
 
@@ -1095,12 +1094,19 @@ public class MainActivity extends Activity {
         return true;
     }
 
-    public void play(int id) {
-        Log.v("play", id + "");
+    public void playMusic(int id) {
         mSoundPoll.play(id, 0.6f, 0.6f, 0, 0, 1);
     }
 
-    public void SwitchMusic(int id) {
+    public void brighterBlock(Point p) {
+        gv.Brighter(p.x, p.y, 40);
+    }
+
+    public void resetBlock(Point p) {
+        gv.Brighter(p.x, p.y, 0);
+    }
+
+    public void switchMusic(int id) {
         try {
             mp.reset();
             mp.setDataSource(fileDirPath + "/" + fileName[id]);

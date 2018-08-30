@@ -51,7 +51,7 @@ public class Skill {
         editor.putInt("skillLevel1",SkillLevel);
         editor.apply();
         Refresh();
-        parent.play(3);
+        parent.playMusic(3);
     }
     public String getSkillName(){return "无技能";}
     public int getSkillLevel(){return SkillLevel;}
@@ -122,12 +122,19 @@ public class Skill {
     public void addClicks(Point p)
     {
         clicks.add(p);
+        parent.brighterBlock(p);
         if(clicks.size()==clickNum)
         {
             cancelWait();
             InvokeSkill();
         }
     }
-    public void clearPoints(){clicks.clear();}
+    public void clearPoints(){
+        for(Point p:clicks)
+        {
+            parent.resetBlock(p);
+        }
+        clicks.clear();
+    }
     public void InvokeSkill(){}
 }

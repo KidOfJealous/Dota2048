@@ -63,7 +63,7 @@ public class TimeLapse extends Skill {
             CurrentCool=CoolDown;
             parent.Load(values[0]);
             WriteValues();
-            parent.PlaySkillVoice();
+            parent.playSkillVoice();
             return true;
         }
         else{
