@@ -10,6 +10,7 @@ import android.content.res.Resources;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Point;
+import android.icu.text.Normalizer2;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
@@ -65,6 +66,17 @@ public class MainActivity extends Activity {
     private final LinearLayout[] enters = new LinearLayout[enterpages];
     private final LinearLayout[] stores = new LinearLayout[storepages];
 
+    private void add()
+    {
+        SharedPreferences s = this.getSharedPreferences("pay",MODE_PRIVATE);
+        if(!s.getBoolean("Gold1",false))
+        {
+            new Gold(this).addGold(5000);
+            SharedPreferences.Editor e = s.edit();
+            e.putBoolean("Gold1",true);
+            e.apply();
+        }
+    }
     public TextView tvScore;//计分的
     public TextView tvBestScore;//最高分
     public TextView tvMaxLevel;
@@ -104,7 +116,7 @@ public class MainActivity extends Activity {
         createFile();
         importMusic();
         mp.start();
-
+        add();
     }
     @Override
     protected void onStop() {
@@ -394,7 +406,6 @@ public class MainActivity extends Activity {
         if (bt != null) bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                calculateGold();
                 Restart();
                 showScore();
                 gv.setAll();
@@ -518,6 +529,7 @@ public class MainActivity extends Activity {
     }
 
     public void Restart() {
+        calculateGold();
         Clear();
         num = 0;
         battling = false;
@@ -538,7 +550,6 @@ public class MainActivity extends Activity {
 
     public void ReBegin() {
         loadRecord();
-        calculateGold();
         Restart();
         showScore();
         setCoolImage();

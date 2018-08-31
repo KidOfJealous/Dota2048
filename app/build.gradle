@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         Certificate {
-            keyAlias 'key0'
+            keyAlias 'key1'
             keyPassword 'heyuqi@o99'
             storeFile file('/Users/yuqiao.he/Documents/Certificate')
             storePassword 'heyuqi@o99'
