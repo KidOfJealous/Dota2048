@@ -54,15 +54,16 @@ public class MainActivity extends Activity {
     private final int[] resource = {R.raw.menu, R.raw.game, R.raw.heroselect, R.raw.battle};
     private final int BackNum = 4;
     private final int MusicNum = 3;
-    private final int pages = HeroNums / 3 + 1;
+    private final int storepages = (HeroNums-1) / 3 + 1;
+    private final int enterpages = HeroNums/3 + 1;
     private final List<Point> points = new ArrayList<>();
     private final SoundPool mSoundPoll = new SoundPool(100, AudioManager.STREAM_MUSIC, 0);
 
     private final int[][] value = new int[4][4];
     private final boolean[][] shines = new boolean[4][4];
     private Animation[][] animes = new TranslateAnimation[4][4];
-    private LinearLayout[] enters;
-    public LinearLayout[] stores;
+    private final LinearLayout[] enters = new LinearLayout[enterpages];
+    private final LinearLayout[] stores = new LinearLayout[storepages];
 
     public TextView tvScore;//计分的
     public TextView tvBestScore;//最高分
@@ -611,7 +612,7 @@ public class MainActivity extends Activity {
         for (int y = 0; y < 4; y++) {
             for (int x = 0; x < 4; x++) {
                 if (value[x][y] <= 0) {
-                    points.add(new Point(x, y));//给List存放控制卡片用的指针（通过坐标轴来控制）
+                    points.add(new Point(x, y));
                 }
             }
         }
@@ -862,7 +863,6 @@ public class MainActivity extends Activity {
         contentView = R.layout.activity_store;
         res = getResources();
         final Button[] buy = new Button[HeroNums];
-        stores = new LinearLayout[pages];
         Button np = findViewById(R.id.nextPage);
         Button pp = findViewById(R.id.prePage);
         np.setOnClickListener(new View.OnClickListener() {
@@ -877,8 +877,8 @@ public class MainActivity extends Activity {
                 MainActivity.this.preStore();
             }
         });
-        for (int i = 0; i < pages; ++i) {
-            int id = res.getIdentifier("storeRecord" + i, "id", getPackageName());
+        for (int i = 0; i < storepages; ++i) {
+            int id = res.getIdentifier("store" + i, "id", getPackageName());
             stores[i] = findViewById(id);
         }
         for (int i = 1; i <= HeroNums; ++i) {
@@ -945,8 +945,7 @@ public class MainActivity extends Activity {
         final Hero hero = new Hero(this);
         contentView = R.layout.activity_enter;
         ImageView[] use = new ImageView[HeroNums + 1];
-        enters = new LinearLayout[pages];
-        for (int i = 0; i < pages; ++i) {
+        for (int i = 0; i < enterpages; ++i) {
             int id = res.getIdentifier("enter" + i, "id", getPackageName());
             enters[i] = findViewById(id);
         }
@@ -1019,7 +1018,7 @@ public class MainActivity extends Activity {
     }
 
     public void nextStore() {
-        if (currentPage == pages - 1) {
+        if (currentPage == storepages - 1) {
             showTextToast("已经最后一页了");
             return;
         }
@@ -1037,7 +1036,7 @@ public class MainActivity extends Activity {
     }
 
     public void nextEnter() {
-        if (currentPage == pages - 1) {
+        if (currentPage == enterpages - 1) {
             showTextToast("已经最后一页了");
             return;
         }

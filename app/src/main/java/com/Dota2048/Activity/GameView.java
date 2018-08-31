@@ -25,10 +25,8 @@ public class GameView extends FrameLayout {
     private int[][]value;
     private GridLayout BackGround;
     private GridLayout FrontGround;
-    private MainActivity parent;
     LayoutParams lp = new LayoutParams(-1,-1);
     public void set(MainActivity p,int[][] v,boolean[][] s) {
-        parent = p;
         value = v;
         shines = s;
         for(int i=0;i<4;++i)
@@ -51,14 +49,6 @@ public class GameView extends FrameLayout {
         super(context, attrs, defStyleAttr);
         initGameView();
     }
-    public void startAnimation(Animation[][] animations)
-    {
-        for(int i=0;i<4;++i)
-            for(int j=0;j<4;++j)
-            {
-                cardsMap[i][j].startAnimation(animations[i][j]);
-            }
-    }
     public void StartAnimes(Animation[][] animes)
     {
         for(int x =0;x<4;++x)
@@ -69,13 +59,7 @@ public class GameView extends FrameLayout {
     /**
      * 初始化界面
      */
-    private void setDouble(int x,int y,int x1,int y1)
-    {
-        cardsMap[x][y].setNum(value[x][y]);
-        cardsMap[x1][y1].setNum(value[x1][y1]);
-    }
     private void initGameView(){
-        //mySkill = new RequiemOfSouls(getContext());
         FrontGround = new GridLayout(getContext());
         BackGround = new GridLayout(getContext());
         BackGround.setColumnCount(4);
@@ -145,9 +129,6 @@ public class GameView extends FrameLayout {
     }
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        // 宽模式
-        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-        // 宽大小
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         // 高大小
         int heightSize;
