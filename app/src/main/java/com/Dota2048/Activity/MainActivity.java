@@ -163,7 +163,7 @@ public class MainActivity extends Activity {
                     InputStream ins = getResources().openRawResource(resource[i]);
                     FileOutputStream fos = new FileOutputStream(file);
                     byte[] buffer = new byte[8192];
-                    int count = 0;
+                    int count;
                     while ((count = ins.read(buffer)) > 0) {
                         fos.write(buffer, 0, count);
                     }
@@ -344,7 +344,7 @@ public class MainActivity extends Activity {
     }
 
     private void storeRecord() {
-        SharedPreferences s = this.getSharedPreferences("currentPosition", this.MODE_PRIVATE);
+        SharedPreferences s = this.getSharedPreferences("currentPosition", MODE_PRIVATE);
         SharedPreferences.Editor editor = s.edit();
         for (int i = 0; i < 4; ++i)
             for (int j = 0; j < 4; ++j) {
@@ -352,7 +352,7 @@ public class MainActivity extends Activity {
             }
             editor.putBoolean("hardGame",hardGame);
         editor.apply();
-        s = this.getSharedPreferences("Score", this.MODE_PRIVATE);
+        s = this.getSharedPreferences("Score", MODE_PRIVATE);
         editor = s.edit();
         editor.putInt("currentScore", score);
         editor.apply();
@@ -360,14 +360,14 @@ public class MainActivity extends Activity {
     }
 
     private void loadRecord() {
-        SharedPreferences s = this.getSharedPreferences("currentPosition", this.MODE_PRIVATE);
+        SharedPreferences s = this.getSharedPreferences("currentPosition", MODE_PRIVATE);
         for (int i = 0; i < 4; ++i)
             for (int j = 0; j < 4; ++j) {
                 value[i][j] = s.getInt("currentBlock" + i + ":" + j, 0);
             }
         mySkill = SkillFactory.CreateSkill(this, s.getInt("SkillUsing", 0), this);
         hardGame = s.getBoolean("hardGame",false);
-        s = this.getSharedPreferences("Score", this.MODE_PRIVATE);
+        s = this.getSharedPreferences("Score", MODE_PRIVATE);
         score = s.getInt("currentScore", 100);
         BestScore BS = new BestScore(this,hardGame);
         bestScores = BS.getBestScode();
@@ -478,7 +478,6 @@ public class MainActivity extends Activity {
                     @Override
                     public void onAnimationEnd(Animation animation) {
                         addRandomNum();
-                        if(hardGame&&num<=14)addRandomNum();
                         gv.setAll();
                         check();
                         move = true;
@@ -550,8 +549,7 @@ public class MainActivity extends Activity {
     public int[][] Export() {
         int[][] values = new int[5][4];
         for (int i = 0; i < 4; ++i)
-            for (int j = 0; j < 4; ++j)
-                values[i][j] = value[i][j];
+           System.arraycopy(value[i],0,values[i],0,4);
         values[4][0] = bestScores;
         values[4][1] = score;
         return values;
@@ -622,7 +620,13 @@ public class MainActivity extends Activity {
             return;
         }
         Point p = points.remove((int) (Math.random() * points.size()));
-        value[p.x][p.y] = (Math.random() > 0.1 ? 2 : 4);
+        if(!hardGame)value[p.x][p.y] = (Math.random() > 0.1 ? 2 : 4);
+        else
+        {
+            int s = 2;
+            while(Math.random()>0.66)s*=2;
+            value[p.x][p.y]=s;
+        }
         num++;
         storeRecord();
     }
@@ -681,11 +685,6 @@ public class MainActivity extends Activity {
                 }
             }
         }
-        if (merge) {
-            playAttackVoice();
-            Cool();
-            gv.StartAnimes(animes);
-        }
     }
 
     private void swipeUp() {
@@ -717,11 +716,6 @@ public class MainActivity extends Activity {
                     }
                 }
             }
-        }
-        if (merge) {
-            playAttackVoice();
-            Cool();
-            gv.StartAnimes(animes);
         }
     }
 
@@ -756,11 +750,6 @@ public class MainActivity extends Activity {
                     }
                 }
             }
-        }
-        if (merge) {
-            playAttackVoice();
-            Cool();
-            gv.StartAnimes(animes);
         }
     }
 

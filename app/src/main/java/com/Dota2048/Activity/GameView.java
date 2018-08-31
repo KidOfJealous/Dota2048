@@ -71,12 +71,6 @@ public class GameView extends FrameLayout {
         addView(BackGround);
         addView(FrontGround);
     }
-
-    /**
-     * 布局里面加入卡片
-     * @param cardWidth
-     * @param cardHeight
-     */
     private void addCards(int cardWidth,int cardHeight){
         Card c;
         lp.setMargins(8,8,8,8);

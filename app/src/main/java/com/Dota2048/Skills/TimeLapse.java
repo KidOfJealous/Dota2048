@@ -2,6 +2,7 @@ package com.Dota2048.Skills;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.Dota2048.Activity.MainActivity;
 import com.Game.yuqiaohe.test.R;
@@ -24,18 +25,22 @@ public class TimeLapse extends Skill {
     @Override
     public void Cool() {
         super.Cool();
-        //Log.d("cool",String.valueOf(CurrentCool));
-        //偷懒的方法，在冷却为5时计入。
-        if (step==5) {
-            for(int i=0;i<4;++i)
-                values[i]=values[i+1];
-            values[4]=parent.Export();
-        }
-        if (step < 5) {
-            step++;
-            if(step>2)values[step-1]=parent.Export();
-            //write("step", step);
-        }
+        System.arraycopy(values,1,values,0,4);
+        values[4]=parent.Export();
+        /*for(int i=0;i<5;++i)
+        {
+            StringBuilder sb = new StringBuilder();
+            for(int j=0;j<4;++j)
+            {
+                for(int k = 0;k<4;++k) {
+                    sb.append(values[i][k][j]);
+                    sb.append(" ");
+                }
+                sb.append("\n");
+            }
+            Log.d(i+"",sb.toString());
+
+        }*/
         WriteValues();
     }
     private void WriteValues()
@@ -53,7 +58,8 @@ public class TimeLapse extends Skill {
     {
         for(int i=0;i<5;++i)
             for(int j=0;j<4;++j)
-                values[0][i][j]=s.getInt("value"+i+j,0);
+                for(int k =0;k<5;++k)
+                    values[k][i][j]=s.getInt("value"+i+j,0);
         CurrentCool=s.getInt("CurrentCool",CoolDown);
     }
     @Override
@@ -74,10 +80,22 @@ public class TimeLapse extends Skill {
     @Override
     public void init()
     {
-        step=0;
-        values[0]=parent.Export();
-        for(int i=1;i<5;++i)values[i]=parent.Export();
+        for(int i=0;i<5;++i)values[i]=parent.Export();
         CurrentCool=0;
+        /*for(int i=0;i<5;++i)
+        {
+            StringBuilder sb = new StringBuilder();
+            for(int j=0;j<4;++j)
+            {
+                for(int k = 0;k<4;++k) {
+                    sb.append(values[i][k][j]);
+                    sb.append(" ");
+                }
+                sb.append("\n");
+            }
+            Log.d(i+"",sb.toString());
+
+        }*/
     }
     @Override
     protected void Refresh()
